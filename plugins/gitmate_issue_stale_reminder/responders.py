@@ -49,7 +49,9 @@ def add_stale_label_to_issues(
     IssueActions.COMMENTED,
     IssueActions.LABELED,
     IssueActions.UNLABELED,
+    IssueActions.ATTRIBUTES_CHANGED,
     MergeRequestActions.OPENED,
+    MergeRequestActions.ATTRIBUTES_CHANGED,
     MergeRequestActions.SYNCHRONIZED
 )
 def remove_stale_label_from_issues(
