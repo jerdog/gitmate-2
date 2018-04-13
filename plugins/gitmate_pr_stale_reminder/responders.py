@@ -38,6 +38,7 @@ def add_stale_label_to_merge_requests(
     MergeRequestActions.REOPENED,
     MergeRequestActions.SYNCHRONIZED,
     MergeRequestActions.COMMENTED,
+    MergeRequestActions.ATTRIBUTES_CHANGED,
     MergeRequestActions.MERGED
 )
 def remove_stale_label_from_merge_requests(
