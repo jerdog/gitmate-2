@@ -32,18 +32,23 @@ class TestWebhookReceivers(GitmateTestCase):
     def test_github_webhook_receiver_signature_match_failed(self):
         data = {'some-random-key': 'some-random-value'}
         request = self.factory.post('/webhooks/github', data, format='json')
-        request.META.update({'HTTP_X_HUB_SIGNATURE': 'sha1=somerandomvalue'})
+        request.META.update({
+            'HTTP_X_GITHUB_EVENT': 'pull_request',
+            'HTTP_X_HUB_SIGNATURE': 'sha1=somerandomvalue'
+        })
         response = github_webhook_receiver(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_github_webhook_receiver_no_signature(self):
         data = {'some-random-key': 'some-random-value'}
         request = self.factory.post('/webhooks/github', data, format='json')
+        request.META.update({'HTTP_X_GITHUB_EVENT': 'pull_request'})
         response = github_webhook_receiver(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_github_webhook_receiver_no_data_received(self):
         request = self.factory.post('/webhooks/github', format='json')
+        request.META.update({'HTTP_X_GITHUB_EVENT': 'pull_request'})
         response = github_webhook_receiver(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
