@@ -1,4 +1,5 @@
 from collections import defaultdict
+from django.apps import apps
 
 from IGitt.Interfaces.Actions import IssueActions
 from IGitt.Interfaces.Actions import MergeRequestActions
@@ -26,9 +27,22 @@ def sync_updated_pr_with_issue(pr: MergeRequest,
     data = defaultdict(dict)
 
     with lock_igitt_object('label mr', pr):
-        labels = pr.labels
+        temp_labels = pr.labels
+        config = apps.get_app_config('gitmate_pr_size_labeller')
+        settings = config.get_settings(repo)
+        size_scheme = settings['size_scheme']
+        ignore = {size_scheme.format(size=letter)
+                  for letter in ['S', 'XS', 'M', 'L', 'XL', 'XXL']}
+        config = apps.get_app_config('gitmate_auto_label_pending_or_wip')
+        settings = config.get_settings(repo)
+        ignore.add(settings['wip_label'])
+        ignore.add(settings['pending_review_label'])
+        config = apps.get_app_config('gitmate_approver')
+        settings = config.get_settings(repo)
+        ignore.add(settings['approved_label'])
+        labels = ignore & temp_labels
         for issue in issues:
-            labels = issue.labels | labels
+            labels |= issue.labels
         pr.labels = labels
 
     if sync_assignees:

@@ -37,7 +37,7 @@ class TestIssuePRSync(GitmateTestCase):
         m_cl_iss.return_value = {
             GitHubIssue(self.repo.token, self.repo.full_name, 0)}
         m_iss_labels.return_value = {'a', 'b'}
-        m_labels.return_value = set()
+        m_labels.return_value = {'size/S', 'process/WIP'}
         m_iss_assignees.return_value = {self.gh_user}
         m_assignees.return_value = set()
 
@@ -51,7 +51,7 @@ class TestIssuePRSync(GitmateTestCase):
         response = self.simulate_github_webhook_call('pull_request', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        m_labels.assert_called_with({'a', 'b'})
+        m_labels.assert_called_with({'a', 'b', 'size/S', 'process/WIP'})
         m_assignees.assert_called_with({self.gh_user})
 
         # testing updated issue assignees
@@ -138,7 +138,7 @@ class TestIssuePRSync(GitmateTestCase):
         m_cl_iss.return_value = {
             GitLabIssue(self.gl_repo.token, self.gl_repo.full_name, 0)}
         m_iss_labels.return_value = {'a', 'b'}
-        m_labels.return_value = set()
+        m_labels.return_value = {'size/S', 'process/WIP'}
         m_iss_assignees.return_value = {self.gl_user}
         m_assignees.return_value = set()
 
@@ -154,7 +154,7 @@ class TestIssuePRSync(GitmateTestCase):
             'Merge Request Hook', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        m_labels.assert_called_with({'a', 'b'})
+        m_labels.assert_called_with({'a', 'b', 'size/S', 'process/WIP'})
         m_assignees.assert_called_with({self.gl_user})
 
         # testing updated issue assignees
