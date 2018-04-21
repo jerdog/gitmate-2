@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker login \
+       -u gitlab-ci-token \
+       -p "$CI_JOB_TOKEN" \
+       registry.gitlab.com

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x -e -o pipefail
+
+pip install --no-cache-dir -r test-requirements.txt
+
+py.test -vv --cov --doctest-modules

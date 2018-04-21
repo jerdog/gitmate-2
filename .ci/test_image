@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -x -e -o pipefail
+
+source gen_image_tags
+
+getent hosts postgres
+
+docker run \
+       --env-file=".ci/test_environment" \
+       "$GITMATE_CURRENT_IMAGE_TAG" \
+       ".ci/run_tests"

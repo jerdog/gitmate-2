@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -x -e -o pipefail
+
+source gen_image_tags
+
+login_registry
+
+suffix="$1"
+image_tag="$GITMATE_CURRENT_IMAGE_TAG$suffix"
+
+echo "$CI_COMMIT_SHA" > .version
+
+docker build -t $image_tag .
+docker push $image_tag
