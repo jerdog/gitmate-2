@@ -17,6 +17,7 @@ from .models import MergeRequestModel
 sha_regex = r'\b[0-9a-f]{5,40}\b'
 sha_compiled = re.compile(sha_regex)
 
+
 def _get_commit_hash(commit: Commit):
     """
     Returns a unique hash generated from the commit message and unified diff
