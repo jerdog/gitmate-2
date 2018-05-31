@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 98f0f5b512132e1a255f6f6b400f6a121c7a35c838bdf6c9cf0750ef09a97b9f]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"c20bbac6492932aa833aca4753905814"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://gitlab.com/api/v4/projects/gitmate-test-user%2Ftest/merge_requests/2?per_page=100
+  response:
+    body: {string: ''}
+    headers:
+      Cache-Control: ['max-age=0, private, must-revalidate']
+      Date: ['Wed, 20 Jun 2018 08:28:35 GMT']
+      Etag: [W/"c20bbac6492932aa833aca4753905814"]
+      RateLimit-Limit: ['600']
+      RateLimit-Observed: ['4']
+      RateLimit-Remaining: ['596']
+      RateLimit-Reset: ['1529483375']
+      RateLimit-ResetTime: ['Thu, 20 Jun 2018 08:29:35 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000]
+      Vary: [Origin]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-Request-Id: [4008c8b2-7c76-4c2a-8465-9dd10518ab93]
+      X-Runtime: ['0.150125']
+    status: {code: 304, message: Not Modified}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 98f0f5b512132e1a255f6f6b400f6a121c7a35c838bdf6c9cf0750ef09a97b9f]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"c20bbac6492932aa833aca4753905814"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://gitlab.com/api/v4/projects/gitmate-test-user%2Ftest/merge_requests/2?per_page=100
+  response:
+    body: {string: ''}
+    headers:
+      Cache-Control: ['max-age=0, private, must-revalidate']
+      Date: ['Wed, 20 Jun 2018 08:33:54 GMT']
+      Etag: [W/"c20bbac6492932aa833aca4753905814"]
+      RateLimit-Limit: ['600']
+      RateLimit-Observed: ['1']
+      RateLimit-Remaining: ['599']
+      RateLimit-Reset: ['1529483694']
+      RateLimit-ResetTime: ['Thu, 20 Jun 2018 08:34:54 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000]
+      Vary: [Origin]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-Request-Id: [c7cb2310-71c4-4bbc-b083-1a7a522a74d2]
+      X-Runtime: ['0.255942']
+    status: {code: 304, message: Not Modified}
+version: 1
