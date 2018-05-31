@@ -13,10 +13,12 @@ from IGitt.GitHub.GitHubComment import GitHubComment
 from IGitt.GitHub.GitHubMergeRequest import GitHubMergeRequest
 from IGitt.GitHub.GitHubRepository import GitHubRepository
 from IGitt.GitHub.GitHubUser import GitHubUser
+from IGitt.GitHub.GitHubCommit import GitHubCommit
 from IGitt.GitLab.GitLabComment import GitLabComment
 from IGitt.GitLab.GitLabMergeRequest import GitLabMergeRequest
 from IGitt.GitLab.GitLabRepository import GitLabRepository
 from IGitt.GitLab.GitLabUser import GitLabUser
+from IGitt.GitLab.GitLabCommit import GitLabCommit
 from IGitt.Interfaces import AccessLevel
 from IGitt.Interfaces.Comment import CommentType
 
@@ -51,6 +53,8 @@ class TestGitmateRebaser(GitmateTestCase):
             'settings': {
                 'enable_rebase': True,
                 'fastforward_admin_only': True,
+                'enable_squash': True,
+                'squash_admin_only': True,
             }
         }]
         self.gl_repo.settings = [{
@@ -69,6 +73,16 @@ class TestGitmateRebaser(GitmateTestCase):
             'comment': {'id': 322317220},
             'action': 'created'
         }
+        self.github_data_2 = {
+            'repository': {'full_name': environ['GITHUB_TEST_REPO'],
+                           'id': 49558751},
+            'issue': {
+                'number': 7,
+                'pull_request': {},
+            },
+            'comment': {'id': 331729393},
+            'action': 'created'
+        }
         self.gitlab_data = {
             'project': {
                 'path_with_namespace': environ['GITLAB_TEST_REPO'],
@@ -79,6 +93,12 @@ class TestGitmateRebaser(GitmateTestCase):
             },
             'merge_request': {'iid': 20}
         }
+        self.gh_commit = GitHubCommit(
+            self.repo.token, self.repo.full_name,
+            'f6d2b7c66372236a090a2a74df2e47f42a54456b')
+        self.gl_commit = GitLabCommit(
+            self.gl_repo.token, self.gl_repo.full_name,
+            'f6d2b7c66372236a090a2a74df2e47f42a54456b')
         self.old_popen = subprocess.Popen
 
     def tearDown(self):
@@ -147,6 +167,27 @@ class TestGitmateRebaser(GitmateTestCase):
             'Automated rebase with [GitMate.io](https://gitmate.io) was '
             'successful! :tada:')
 
+    @patch.object(GitHubMergeRequest, 'commits', new_callable=PropertyMock)
+    @patch.object(GitHubComment, 'body', new_callable=PropertyMock)
+    @patch.object(GitHubMergeRequest, 'add_comment')
+    @patch.object(GitHubComment, 'author', new_callable=PropertyMock)
+    @patch.object(GitHubRepository, 'get_permission_level')
+    def test_github_successful_squash(
+            self, m_get_perm, m_author, m_comment, m_body, m_commits
+    ):
+        m_body.return_value = f'@{self.repo.user.username} squash line1\nline2'
+        m_author.return_value = GitHubUser(
+            self.repo.token, self.repo.user.username)
+        m_get_perm.return_value = AccessLevel.ADMIN
+        m_commits.return_value = tuple([self.gh_commit])
+        subprocess.Popen = fake_popen_success
+        response = self.simulate_github_webhook_call('issue_comment',
+                                                     self.github_data_2)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        m_comment.assert_called_with(
+            'Automated squash with [GitMate.io](https://gitmate.io) was '
+            'successful! :tada:')
+
     @patch.object(GitLabComment, 'body', new_callable=PropertyMock)
     @patch.object(GitLabMergeRequest, 'add_comment')
     @patch.object(GitLabComment, 'author', new_callable=PropertyMock)
@@ -206,6 +247,8 @@ class TestGitmateRebaser(GitmateTestCase):
             self.repo)['merge_admin_only']
         fastforward_admin_only = self.plugin_config.get_settings(
             self.repo)['fastforward_admin_only']
+        squash_admin_only = self.plugin_config.get_settings(
+            self.repo)['squash_admin_only']
 
         m_repo.return_value = self.repo.igitt_repo
         m_author.return_value = GitHubUser(
@@ -219,14 +262,21 @@ class TestGitmateRebaser(GitmateTestCase):
         m_get_perm.return_value = AccessLevel.CAN_WRITE
         self.assertTrue(verify_command_access(m_comment, merge_admin_only,
                                               fastforward_admin_only,
-                                              'merge'))
+                                              squash_admin_only, 'merge'))
 
         m_get_perm.return_value = AccessLevel.CAN_WRITE
         self.assertFalse(verify_command_access(m_comment, merge_admin_only,
                                                fastforward_admin_only,
+                                               squash_admin_only,
                                                'fastforward'))
 
         m_get_perm.return_value = AccessLevel.ADMIN
         self.assertTrue(verify_command_access(m_comment, merge_admin_only,
                                               fastforward_admin_only,
+                                              squash_admin_only,
                                               'fastforward'))
+
+        m_get_perm.return_value = AccessLevel.CAN_WRITE
+        self.assertFalse(verify_command_access(m_comment, merge_admin_only,
+                                               fastforward_admin_only,
+                                               squash_admin_only, 'squash'))

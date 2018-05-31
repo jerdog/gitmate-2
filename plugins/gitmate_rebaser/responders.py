@@ -12,11 +12,14 @@ from gitmate_config.models import Repository
 from gitmate_hooks.utils import ResponderRegistrar
 
 
-COMMAND_REGEX = r'@(?:{}|gitmate-bot)\s+((?:rebase|merge|fastforward|ff))'
+COMMAND_REGEX = (r'@(?:{}|gitmate-bot)\s+'
+                 r'((?:rebase|merge|fastforward|ff|squash\s+(.+)))')
 
 
 def verify_command_access(comment: Comment, merge_admin_only: bool,
-                          fastforward_admin_only: bool, cmd: str):
+                          fastforward_admin_only: bool,
+                          squash_admin_only: bool,
+                          cmd: str):
     """
     Verifies if the author of comment has access to perform the operation.
     """
@@ -25,7 +28,9 @@ def verify_command_access(comment: Comment, merge_admin_only: bool,
         'merge': (AccessLevel.ADMIN if merge_admin_only else
                   AccessLevel.CAN_WRITE),
         'fastforward': (AccessLevel.ADMIN if fastforward_admin_only else
-                        AccessLevel.CAN_WRITE)
+                        AccessLevel.CAN_WRITE),
+        'squash': (AccessLevel.ADMIN if squash_admin_only else
+                   AccessLevel.CAN_WRITE)
     }
     author_perm = comment.repository.get_permission_level(comment.author)
     if author_perm.value >= perm_levels[cmd].value:
@@ -41,12 +46,13 @@ def get_matched_command(body: str, username: str):
     match = compiled_regex.search(body.lower())
     if match:
         return {
-            'rebase': ('rebase', 'rebased'),
-            'merge': ('merge', 'merged'),
-            'fastforward': ('fastforward', 'fastforwarded'),
-            'ff': ('fastforward', 'fastforwarded')
-        }.get(match.group(1), (None, None))
-    return None, None
+            'rebase': ('rebase', 'rebased', None),
+            'merge': ('merge', 'merged', None),
+            'fastforward': ('fastforward', 'fastforwarded', None),
+            'ff': ('fastforward', 'fastforwarded', None),
+            'squash': ('squash', 'squashed', match.group(2))
+        }.get(match.group(1).split(' ')[0], (None, None, None))
+    return None, None, None
 
 
 @ResponderRegistrar.responder('rebaser', MergeRequestActions.COMMENTED)
@@ -54,28 +60,32 @@ def apply_command_on_merge_request(
         pr: MergeRequest, comment: Comment,
         enable_rebase: bool=False,
         enable_merge: bool=False,
+        enable_squash: bool=False,
         enable_fastforward: bool=False,
         merge_admin_only: bool=True,
         fastforward_admin_only: bool=True,
+        squash_admin_only: bool=True
 ):
     """
-    Performs a merge, fastforward or rebase of a merge request when an
+    Performs a merge, fastforward, squash or rebase of a merge request when an
     authorized user posts a command mentioning the keywords ``merge``,
-    ``fastforward``/``ff`` or ``rebase`` respectively.
+    ``fastforward``/``ff``, ``squash`` or ``rebase`` respectively.
 
     e.g. ``@gitmate-bot rebase`` rebases the pull request with master.
     """
     username = Repository.from_igitt_repo(pr.repository).user.username
-    cmd, cmd_past = get_matched_command(comment.body, username)
+    cmd, cmd_past, message = get_matched_command(comment.body, username)
     enabled_cmd = {
         'rebase': enable_rebase,
         'merge': enable_merge,
-        'fastforward': enable_fastforward
+        'fastforward': enable_fastforward,
+        'squash': enable_squash,
     }.get(cmd)
 
     if enabled_cmd:
         if not verify_command_access(comment, merge_admin_only,
-                                     fastforward_admin_only, cmd):
+                                     fastforward_admin_only, squash_admin_only,
+                                     cmd):
             pr.add_comment(
                 f'Hey @{comment.author.username}, you do not have the access '
                 f'to perform the {cmd} action with [GitMate.io]'
@@ -90,10 +100,12 @@ def apply_command_on_merge_request(
             ':warning:')
         head_clone_url = pr.source_repository.clone_url
         base_clone_url = pr.target_repository.clone_url
-        output = run_in_container(settings.REBASER_IMAGE,
-                                  'python', 'run.py', cmd, head_clone_url,
-                                  base_clone_url, pr.head_branch_name,
-                                  pr.base_branch_name)
+        args = (settings.REBASER_IMAGE, 'python', 'run.py', cmd,
+                head_clone_url, base_clone_url, pr.head_branch_name,
+                pr.base_branch_name)
+        if cmd == 'squash':
+            args = (*args, message)
+        output = run_in_container(*args)
         output = json.loads(output)
         if output['status'] == 'success':
             pr.add_comment(

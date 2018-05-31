@@ -10,6 +10,9 @@ class Settings(SettingsBase):
     enable_merge = models.BooleanField(
         default=False,
         help_text='Merge to default branch (git merge --no-ff).')
+    enable_squash = models.BooleanField(
+        default=False,
+        help_text='Squash commits in source branch.')
     merge_admin_only = models.BooleanField(
         default=False,
         help_text='Only admins can merge if set to True, else anyone with '
@@ -21,3 +24,7 @@ class Settings(SettingsBase):
         default=False,
         help_text='Only admins can fastforward if set to True, else anyone '
                   'with write access can')
+    squash_admin_only = models.BooleanField(
+        default=False,
+        help_text='Only admins can squash if set to True, else anyone with '
+                  'write access can')
