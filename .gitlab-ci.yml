@@ -114,7 +114,7 @@ deploy_master:
     - ssh-add <(echo "$DEPLOY_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - echo "$DEPLOY_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
-    - ssh tomoko@marisa.gitmate.io -p $SSH_PORT 'bash -s' < .ci/deploy.master.sh
+    - ssh tomoko@moeka.gitmate.io 'bash -s' < .ci/deploy.master.sh
   environment:
     name: master
     url: https://api.master.gitmate.io
@@ -132,7 +132,7 @@ deploy_rc:
     - ssh-add <(echo "$DEPLOY_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - echo "$DEPLOY_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
-    - ssh tomoko@marisa.gitmate.io -p $SSH_PORT 'bash -s' < .ci/deploy.rc.sh
+    - ssh tomoko@moeka.gitmate.io 'bash -s' < .ci/deploy.rc.sh
   environment:
     name: rc
     url: https://api.rc.gitmate.io
@@ -150,7 +150,7 @@ deploy_release: &deploy_release
     - ssh-add <(echo "$DEPLOY_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - echo "$DEPLOY_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
-    - ssh tomoko@marisa.gitmate.io -p $SSH_PORT 'bash -s' < .ci/deploy.release.sh
+    - ssh tomoko@nomoya.gitmate.io 'bash -s' < .ci/deploy.release.sh
   environment:
     name: release
     url: https://api.gitmate.io
