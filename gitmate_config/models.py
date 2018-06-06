@@ -143,7 +143,8 @@ class Repository(models.Model):
     activation_count = models.IntegerField(default=0)
 
     # The organization this repository is related to
-    org = models.ForeignKey(Organization, null=True, related_name='repos')
+    org = models.ForeignKey(
+        Organization, models.SET_NULL, null=True, related_name='repos')
 
     # the installation this repository is related to
     installation = models.ForeignKey(

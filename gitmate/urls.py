@@ -15,8 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import include
-from django.conf.urls import url
+from django.urls import include
+from django.urls import path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import logout
@@ -25,12 +25,12 @@ from rest_framework.documentation import include_docs_urls
 from coala_online.views import coala_online
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^auth/', include('social_django.urls', namespace='auth')),
-    url(r'^api/', include('gitmate_config.urls', namespace='api')),
-    url(r'^docs/', include_docs_urls(title='API Documentation')),
-    url(r'^webhooks/', include('gitmate_hooks.urls', namespace='webhooks')),
-    url(r'^logout/', logout,
-        {'next_page': settings.SOCIAL_AUTH_LOGOUT_REDIRECT_URL}),
-    url(r'^coala_online/', coala_online),
+    path('admin/', admin.site.urls),
+    path('auth/', include('social_django.urls', namespace='auth')),
+    path('api/', include('gitmate_config.urls', namespace='api')),
+    path('docs/', include_docs_urls(title='API Documentation')),
+    path('webhooks/', include('gitmate_hooks.urls', namespace='webhooks')),
+    path('logout/', logout,
+         {'next_page': settings.SOCIAL_AUTH_LOGOUT_REDIRECT_URL}),
+    path('coala_online/', coala_online),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

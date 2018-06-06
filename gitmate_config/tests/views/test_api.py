@@ -1,10 +1,11 @@
+from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from gitmate_config.tests.test_base import GitmateTestCase
 from gitmate_config.models import Repository, Organization
 from gitmate_config.views import UserViewSet
-from django.contrib.auth.models import User
 
 
 class TestApi(GitmateTestCase):
@@ -67,7 +68,10 @@ class TestApi(GitmateTestCase):
         response = self.user_detail(destroy_user_request, pk='me')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Repository.objects.filter(user=self.user).count(), 0)
+        with self.assertRaises(User.DoesNotExist):
+            self.user.refresh_from_db()
+        self.assertEqual(Repository.objects.filter(
+            Q(provider='github') | Q(provider='gitlab')).count(), 0)
 
     def test_destroy_user_multiple_admin(self):
         # create a user and add him as an admin for self.repo

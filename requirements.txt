@@ -1,4 +1,4 @@
-django~=1.11
+django~=2.0
 djangorestframework~=3.3
 django-rest-auth~=0.7
 python-social-auth[django]~=0.3
@@ -10,7 +10,7 @@ gunicorn~=19.7.1
 gevent~=1.2.2
 psycopg2==2.7.3
 bugspots3==0.3.0.dev20171215101805
-attrs~=17.2.0
+attrs~=17.4.0
 django-pglocks~=1.0.2
-raven~=6.2.1
+raven~=6.4.0
 coreapi~=2.3.3

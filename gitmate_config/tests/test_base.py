@@ -154,6 +154,8 @@ class GitmateTestCase(RecordedTestCase):
     """
     active = False
     upmate = True
+    plugin = None
+    plugin_config = None
 
     def setUp(self):
         self.factory = APIRequestFactory()
@@ -206,7 +208,6 @@ class GitmateTestCase(RecordedTestCase):
         self.gh_inst = Installation(provider='github', identifier=1)
         self.gh_inst.save()  # Needs an ID before adding relationship
         self.gh_inst.admins.add(self.user)
-        self.gh_inst.save()
 
         self.gh_app_repo = Repository(
             identifier=49558751,
