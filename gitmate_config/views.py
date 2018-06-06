@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -47,7 +46,7 @@ class RepositoryViewSet(
     Patches a specified repository of the authenticated user.
     """
     serializer_class = RepositorySerializer
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -206,7 +205,7 @@ class UserViewSet(
     update:
     Updates the user details of the authenticated user.
     """
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
     queryset = User.objects.all()
@@ -248,7 +247,7 @@ class PluginSettingsViewSet(
     update:
     Updates the configuration for the plugins of a repository.
     """
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = PluginSettingsSerializer
 
