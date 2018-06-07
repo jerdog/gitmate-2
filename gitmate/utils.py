@@ -125,7 +125,7 @@ class GitmatePluginConfig(AppConfig):
         # importing all responders to register tasks
         try:
             import_module(self.name + '.responders')
-        except BaseException as exc:
+        except BaseException as exc:  # pragma: no cover
             print(str(exc))
 
     def _default_settings(self, repo):

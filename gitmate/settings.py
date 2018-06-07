@@ -90,6 +90,8 @@ RAVEN_CONFIG = {
 }
 
 GITMATE_PLUGINS = get_plugins()
+if not DEBUG:  # pragma: no cover
+    GITMATE_PLUGINS.remove('testplugin')
 
 # Application definition
 INSTALLED_APPS = (REQUISITE_APPS +

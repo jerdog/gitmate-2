@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from hashlib import sha1
 import hmac
 import inspect
@@ -7,7 +6,6 @@ import re
 
 from django.apps import apps
 from django.apps.registry import Apps
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import management
 from django.db import connection
@@ -19,7 +17,6 @@ from social_django.models import UserSocialAuth
 from vcr import VCR
 import pytest
 
-from gitmate.utils import snake_case_to_camel_case
 from gitmate_config.enums import Providers
 from gitmate_config.models import Installation
 from gitmate_config.models import Organization
@@ -32,35 +29,6 @@ from gitmate_hooks.views import gitlab_webhook_receiver
 FILTER_QUERY_PARAMS = ['access_token', 'private_token']
 FILTER_PARAMS_REGEX = re.compile(r'(\??)((?:{})=\w+&?)'.format(
     '|'.join(FILTER_QUERY_PARAMS)))
-
-# this is a helper method to reinitate gitmate plugins and is used only
-# for testing purposes and is not a part of the actual gitmate server,
-# henceforth coverage here is not required.
-
-
-def reinit_plugin(name):  # pragma: no cover
-    """
-    Reinitialize gitmate with the specified plugin.
-    """
-    app_name = 'gitmate_' + name
-    app_config_name = 'plugins.{}.apps.{}Config'.format(
-        app_name, snake_case_to_camel_case(app_name))
-
-    if app_config_name in settings.INSTALLED_APPS:
-        return
-
-    settings.GITMATE_PLUGINS += [name]
-    settings.INSTALLED_APPS += [app_config_name]
-    # To load the new app let's reset app_configs, the dictionary
-    # with the configuration of loaded apps
-    apps.app_configs = OrderedDict()
-    # set ready to false so that populate will work
-    apps.ready = False
-    # re-initialize them all
-    apps.populate(settings.INSTALLED_APPS)
-
-    # migrate the models
-    management.call_command('migrate', app_name, interactive=False)
 
 
 class StreamMock:
@@ -188,9 +156,6 @@ class GitmateTestCase(RecordedTestCase):
     upmate = True
 
     def setUp(self):
-        # Reconfigure gitmate for tests
-        reinit_plugin('testplugin')
-
         self.factory = APIRequestFactory()
 
         self.user = User.objects.create_user(
