@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from django.conf import settings
 from IGitt.GitHub.GitHubMergeRequest import GitHubMergeRequest
+from IGitt.GitHub.GitHubRepository import GitHubRepository
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -96,7 +97,8 @@ class TestWebhookReceivers(GitmateTestCase):
         response = self.simulate_github_webhook_call('pull_request', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_github_installation_webhook_created_or_updated(self):
+    @patch.object(GitHubRepository, 'delete_hook')
+    def test_github_installation_webhook_created_or_updated(self, m_del_hook):
         # installation created webhook
         data = {
             'action': 'created',
@@ -108,6 +110,8 @@ class TestWebhookReceivers(GitmateTestCase):
         }
         response = self.simulate_github_webhook_call('installation', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        m_del_hook.assert_called_once_with(
+            'https://localhost:8000/webhooks/github')
 
         # verification
         self.repo.refresh_from_db()

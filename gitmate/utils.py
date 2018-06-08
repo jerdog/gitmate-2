@@ -7,6 +7,7 @@ import subprocess
 
 from django.apps import apps
 from django.apps import AppConfig
+from django.conf import settings
 from django.forms.models import model_to_dict
 from django_pglocks import advisory_lock
 
@@ -77,6 +78,11 @@ def snake_case_to_camel_case(string: str):
     Converts a string from snake_case to CamelCase.
     """
     return ''.join(group.capitalize() or '_' for group in string.split('_'))
+
+
+def get_webhook_url(provider: str) -> str:
+    return 'https://{domain}/webhooks/{provider}'.format(
+        domain=settings.HOOK_DOMAIN, provider=provider)
 
 
 class GitmatePluginConfig(AppConfig):

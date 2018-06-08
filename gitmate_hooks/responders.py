@@ -10,6 +10,7 @@ from IGitt.Interfaces.Installation import Installation as IGittInstallation
 from IGitt.Interfaces.Repository import Repository as IGittRepository
 from IGitt.Interfaces.User import User as IGittUser
 
+from gitmate.utils import get_webhook_url
 from gitmate_config.models import Installation
 from gitmate_config.models import Repository
 from gitmate_config.utils import get_user_if_exists
@@ -39,6 +40,8 @@ def update_installed_repositories(
         db_installation.save()
 
     for repo in repos:
+        # delete any prior webhooks to the URL
+        repo.delete_hook(get_webhook_url(repo.hoster))
         Repository.objects.update_or_create(
             identifier=repo.identifier,
             provider=repo.hoster,
