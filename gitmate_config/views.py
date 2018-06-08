@@ -1,3 +1,4 @@
+from IGitt.GitHub import GH_INSTANCE_URL
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count
@@ -10,10 +11,10 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-
 from social_django.models import UserSocialAuth
 
 from gitmate.apps import get_all_plugins
+from gitmate.utils import get_webhook_url
 from gitmate_config.enums import Providers
 from gitmate_config.models import Installation
 from gitmate_config.models import Organization
@@ -156,6 +157,14 @@ class RepositoryViewSet(
         activation/decativation of the webhook only.
         """
         instance = self.get_object()
+        if instance.installation is not None:
+            # github app should configure installations from GitHub web UI
+            url = (f'{GH_INSTANCE_URL.rstrip("/")}/settings/installations/'
+                   f'{instance.installation.identifier}')
+            return Response({
+                'msg': f'Please visit {url} to configure your installation.'
+            }, status.HTTP_406_NOT_ACCEPTABLE)
+
         active_changed = (request.data['active'] != instance.active
                           if 'active' in request.data
                           else False)
@@ -165,9 +174,7 @@ class RepositoryViewSet(
         if active_changed:
             instance = self.get_object()
             repo = instance.igitt_repo
-            hook_url = 'https://{domain}/webhooks/{provider}'.format(
-                domain=settings.HOOK_DOMAIN, provider=instance.provider)
-
+            hook_url = get_webhook_url(instance.provider)
             if instance.active:
                 # increment the repository activation count
                 instance.activation_count += 1

@@ -53,6 +53,18 @@ class TestRepositories(GitmateTestCase):
         cached_response = self.repo_list(cached_get_repos_request)
         self.assertEqual(cached_response.data, response.data)
 
+    def test_activate_repo_with_installation(self):
+        url = reverse('api:repository-detail', args=(self.gh_app_repo.pk,))
+        activate_repo_request = self.factory.patch(url, {'active': True})
+        activate_repo_request.user = self.user
+        response = self.repo_detail(
+            activate_repo_request, pk=self.gh_app_repo.pk)
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        inst_url = 'https://github.com/settings/installations/1'
+        self.assertEqual(
+            response.data['msg'],
+            f'Please visit {inst_url} to configure your installation.')
+
     def test_activate_repo(self):
         url = reverse('api:repository-detail', args=(self.repo.pk,))
         activate_repo_request = self.factory.patch(url, {'active': True})
