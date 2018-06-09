@@ -117,7 +117,7 @@ class MigrationTestCase(RecordedTestCase):
     def tearDown(self):
         # run the migration all the way forward after testing
         management.call_command(
-            'migrate', self.app, verbosity=0, interactive=False)
+            'migrate', verbosity=0, interactive=False)
 
     def setUp(self):
         self.assertTrue(
