@@ -4,7 +4,6 @@ from os import environ
 from unittest.mock import patch
 
 from django.conf import settings
-from IGitt.GitHub.GitHubMergeRequest import GitHubMergeRequest
 from IGitt.GitHub.GitHubRepository import GitHubRepository
 from rest_framework import status
 from rest_framework.response import Response
@@ -72,9 +71,9 @@ class TestWebhookReceivers(GitmateTestCase):
         # Mocking the GitHubMergeRequest as no such pull request exists and
         # resetting all the responders to stop unnecessary actions during
         # testing phase.
-        with patch.object(GitHubMergeRequest, '__init__', return_value=None):
-            response = github_webhook_receiver(request)
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = github_webhook_receiver(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_gitlab_webhook_receiver_with_build_hook(self):
         data = {

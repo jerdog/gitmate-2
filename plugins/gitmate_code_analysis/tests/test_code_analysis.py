@@ -22,14 +22,20 @@ def popen_coala():
     )
 
 
-def fake_fetch(base: str, req_type: str, token: str, url: str,
+def fake_fetch(url: str, req_type: str, token: str,
                data: dict = None, query_params: dict=None,
                headers: dict=frozenset()):
+    if '/repository/commits' in url:
+        return {
+            'sha': 'deadbeef',
+            'id': 'deadbeef',
+        }
     if '/commits' in url:
         return [{
             'sha': 'deadbeef',
+            'id': 'deadbeef',
         }]
-    elif '/pulls/' in url or '/issues/' in url:
+    elif '/pulls/' in url or '/issues/' in url or '/merge_requests/' in url:
         return {
             'head': {
                 'sha': 'deadbeef',
@@ -39,7 +45,16 @@ def fake_fetch(base: str, req_type: str, token: str, url: str,
             },
             'base': {
                 'sha': 'deadbeef',
-            }
+            },
+            'source_branch': 'source',
+            'target_branch': 'target',
+            'source_project_id': 49558751,
+        }
+    elif '/projects' in url:
+        return {
+            'http_url_to_repo':
+                f'https://gitlab.com/{environ["GITHUB_TEST_REPO"]}',
+            'path_with_namespace': environ['GITHUB_TEST_REPO']
         }
     else:
         return {
@@ -48,7 +63,7 @@ def fake_fetch(base: str, req_type: str, token: str, url: str,
         }
 
 
-@patch('IGitt.GitHub._fetch', side_effect=fake_fetch)
+@patch('IGitt.Interfaces._fetch', side_effect=fake_fetch)
 class TestCodeAnalysis(GitmateTestCase):
 
     BOUNCER_INPUT = '{"old_files": {}, "new_files": {}, ' \
