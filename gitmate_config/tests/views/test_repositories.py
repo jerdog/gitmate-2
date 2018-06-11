@@ -11,6 +11,9 @@ from gitmate_config.models import Repository
 from gitmate_config.tests.test_base import GitmateTestCase
 from gitmate_config.views import RepositoryViewSet
 
+from gitmate_config.utils import GitMateUser
+from unittest.mock import MagicMock
+
 
 class TestRepositories(GitmateTestCase):
 
@@ -64,6 +67,29 @@ class TestRepositories(GitmateTestCase):
         self.assertEqual(
             response.data['msg'],
             f'Please visit {inst_url} to configure your installation.')
+
+    def test_repo_renaming(self):
+        # Clearing a previously created entry from db
+        self.repo.delete()
+        self.gl_repo.delete()
+
+        uncached_get_repos_request = self.factory.get(self.repo_list_url,
+                                                      {'cached': '0'})
+        uncached_get_repos_request.user = self.user
+
+        unmocked_result = GitMateUser(self.user).master_repos(Providers.GITHUB)
+        GitMateUser.master_repos = MagicMock(return_value=unmocked_result)
+        response = self.repo_list(uncached_get_repos_request)
+        self.assertIn(os.environ['GITHUB_TEST_REPO'],
+                      [elem['full_name'] for elem in response.data])
+
+        mocked_result = unmocked_result
+        list(mocked_result)[0]._repository = \
+            'gitmate-test-user/test-mocked-renaming'
+        GitMateUser.master_repos = MagicMock(return_value=mocked_result)
+        response = self.repo_list(uncached_get_repos_request)
+        self.assertIn('gitmate-test-user/test-mocked-renaming',
+                      [elem['full_name'] for elem in response.data])
 
     def test_activate_repo(self):
         url = reverse('api:repository-detail', args=(self.repo.pk,))

@@ -98,7 +98,7 @@ class RepositoryViewSet(
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    repo, _ = Repository.objects.get_or_create(
+                    repo, created = Repository.objects.get_or_create(
                         identifier=igitt_repo.identifier,
                         provider=provider.value,
                         defaults={'active': False,
@@ -106,6 +106,9 @@ class RepositoryViewSet(
                                   'full_name': igitt_repo.full_name,
                                   'identifier': igitt_repo.identifier})
                     repo.admins.add(request.user)
+
+                    if not created:
+                        repo.full_name = igitt_repo.full_name
 
                     if repo.org is None:
                         igitt_org = igitt_repo.top_level_org
