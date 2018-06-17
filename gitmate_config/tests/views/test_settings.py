@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.reverse import reverse
 
@@ -9,6 +10,12 @@ class TestSettings(GitmateTestCase):
 
     def setUp(self):
         super().setUpWithPlugin('testplugin')
+        self.pirate_user = User.objects.create_user(
+            username='jack',
+            email='jack.sparrow@piratebay.com',
+            first_name='Jack',
+            last_name='Sparrow'
+        )
 
         settings = self.plugin_config.settings_model()
         settings.repo = self.repo
@@ -77,6 +84,15 @@ class TestSettings(GitmateTestCase):
     def test_retrieve_plugin_settings_unauthorized(self):
         retrieve_plugin_settings_request = self.factory.get(
             self.plugin_retrieve_url)
+        response = self.plugin_retrieve(
+            retrieve_plugin_settings_request,
+            pk=self.repo.pk)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_retrieve_plugin_settings_unauthorized_diff_user(self):
+        retrieve_plugin_settings_request = self.factory.get(
+            self.plugin_retrieve_url)
+        retrieve_plugin_settings_request.user = self.pirate_user
         response = self.plugin_retrieve(
             retrieve_plugin_settings_request,
             pk=self.repo.pk)
