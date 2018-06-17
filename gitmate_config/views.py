@@ -262,14 +262,22 @@ class PluginSettingsViewSet(
         return [repo.get_plugin_settings_with_info(self.request)
                 for repo in Repository.objects.filter(user=self.request.user)]
 
-    def retrieve(self, request, pk=None):
-        repo = get_object_or_404(Repository, pk=pk)
+    def get_object(self):
+        repo = get_object_or_404(Repository, pk=self.kwargs.get('pk'))
+        if ((repo.installation and
+             self.request.user not in repo.installation.admins.all()) or
+                (self.request.user not in repo.admins.all())):
+            raise PermissionDenied
+        return repo
+
+    def retrieve(self, request, *args, **kwargs):
+        repo = self.get_object()
         serializer = PluginSettingsSerializer(
             instance=repo.get_plugin_settings_with_info(request))
         return Response(serializer.data, status.HTTP_200_OK)
 
     def update(self, request, pk=None, *args, **kwargs):
-        repo = get_object_or_404(Repository, pk=pk)
+        repo = self.get_object()
         repo.settings = request.data
         serializer = PluginSettingsSerializer(
             instance=repo.get_plugin_settings_with_info(request))
