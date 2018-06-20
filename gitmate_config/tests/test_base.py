@@ -6,6 +6,7 @@ import re
 
 from django.apps import apps
 from django.apps.registry import Apps
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import management
 from django.db import connection
@@ -253,7 +254,7 @@ class GitmateTestCase(RecordedTestCase):
         request = self.factory.post(
             reverse('webhooks:github'), data, format='json')
         hashed = hmac.new(
-            bytes(os.environ['WEBHOOK_SECRET'], 'utf-8'),
+            bytes(settings.WEBHOOK_SECRET, 'utf-8'),
             request.body,
             sha1)
         signature = 'sha1=' + hashed.hexdigest()
@@ -268,7 +269,7 @@ class GitmateTestCase(RecordedTestCase):
         request = self.factory.post(
             reverse('webhooks:gitlab'), data, format='json')
         request.META.update({
-            'HTTP_X_GITLAB_TOKEN': os.environ['WEBHOOK_SECRET'],
+            'HTTP_X_GITLAB_TOKEN': settings.WEBHOOK_SECRET,
             'HTTP_X_GITLAB_EVENT': event
         })
         return gitlab_webhook_receiver(request)

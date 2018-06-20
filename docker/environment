@@ -1,19 +1,4 @@
-DB_ENGINE=django.db.backends.postgresql_psycopg2
-DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_ADDRESS=db
-WEBHOOK_SECRET=foobar
-SOCIAL_AUTH_GITHUB_KEY=foobar
-SOCIAL_AUTH_GITHUB_SECRET=foobar
-HOOK_DOMAIN=api.gitmate.io
-DJANGO_DEBUG=True
-FORCE_CELERY=True
-GITHUB_BOT_TOKEN=f12b88db0d3e8b81f32768dcc63d8a7180cc601e
+DJANGO_SETTINGS_MODULE=gitmate.settings.production
 
-GITHUB_SCRAPER_TOKEN=d19fdcacbab93522a46de2154edcab6c75c8c49a
-GITLAB_SCRAPER_TOKEN=foobar
-
-COALA_RESULTS_IMAGE=registry.gitlab.com/gitmate/open-source/coala-incremental-results:latest
-RESULTS_BOUNCER_IMAGE=registry.gitlab.com/gitmate/open-source/result-bouncer:latest
-REBASER_IMAGE=registry.gitlab.com/gitmate/open-source/mr-rebaser:latest
+# enter your production configuration json file path here
+PRODUCTION_CONFIG_PATH=production.env.json
