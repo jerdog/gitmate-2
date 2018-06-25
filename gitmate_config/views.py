@@ -83,6 +83,51 @@ class RepositoryViewSet(
         # give the access to someone else otherwise
         divert_access_to_repos(inaccessible_repos, user)
 
+    @staticmethod
+    def UpdateOrCreateRepo(igitt_repo, provider, request):
+        # Orgs already checked for master access of the current user
+        checked_orgs = set()
+
+        repo, created = Repository.objects.get_or_create(
+            identifier=igitt_repo.identifier,
+            provider=provider.value,
+            defaults={'active': False,
+                      'user': request.user,
+                      'full_name': igitt_repo.full_name,
+                      'identifier': igitt_repo.identifier})
+        repo.admins.add(request.user)
+
+        if not created:
+            repo.full_name = igitt_repo.full_name
+
+        if repo.org is None:
+            igitt_org = igitt_repo.top_level_org
+
+            org, created = Organization.objects.get_or_create(
+                name=igitt_org.name,
+                provider=provider.value,
+                defaults={'primary_user': request.user})
+
+            if created or (
+                org.name not in checked_orgs
+                and request.user not in org.admins.all()
+            ):
+                masters = {m.identifier for m in igitt_org.masters}
+                for admin in repo.admins.all():
+                    if admin.social_auth.get(
+                            provider=repo.provider
+                    ).extra_data['id'] in masters:
+                        org.admins.add(admin)
+
+                if created:
+                    # The user who first lists a repo will also be
+                    # able to manage the org as he's the only one
+                    org.admins.add(request.user)
+                    org.save()
+
+                checked_orgs.add(org.name)
+        return repo
+
     def list(self, request):
         if int(request.GET.get('cached', '1')) > 0:
             return super().list(request)
@@ -91,52 +136,11 @@ class RepositoryViewSet(
 
         for provider in Providers:
             try:
-                # Orgs already checked for master access of the current user
-                checked_orgs = set()
-
                 master_repos = gitmate_user.master_repos(provider)
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    repo, created = Repository.objects.get_or_create(
-                        identifier=igitt_repo.identifier,
-                        provider=provider.value,
-                        defaults={'active': False,
-                                  'user': request.user,
-                                  'full_name': igitt_repo.full_name,
-                                  'identifier': igitt_repo.identifier})
-                    repo.admins.add(request.user)
-
-                    if not created:
-                        repo.full_name = igitt_repo.full_name
-
-                    if repo.org is None:
-                        igitt_org = igitt_repo.top_level_org
-
-                        org, created = Organization.objects.get_or_create(
-                            name=igitt_org.name,
-                            provider=provider.value,
-                            defaults={'primary_user': request.user})
-
-                        if created or (
-                            org.name not in checked_orgs
-                            and request.user not in org.admins.all()
-                        ):
-                            masters = {m.identifier for m in igitt_org.masters}
-                            for admin in repo.admins.all():
-                                if admin.social_auth.get(
-                                        provider=repo.provider
-                                ).extra_data['id'] in masters:
-                                    org.admins.add(admin)
-
-                            if created:
-                                # The user who first lists a repo will also be
-                                # able to manage the org as he's the only one
-                                org.admins.add(request.user)
-                                org.save()
-
-                            checked_orgs.add(org.name)
-
+                    repo = self.UpdateOrCreateRepo(igitt_repo, provider, request)
                     repo.save()
 
                 RepositoryViewSet.unlink_repos_for_provider(
