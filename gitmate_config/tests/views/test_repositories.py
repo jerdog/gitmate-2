@@ -91,6 +91,12 @@ class TestRepositories(GitmateTestCase):
         self.assertIn('gitmate-test-user/test-mocked-renaming',
                       [elem['full_name'] for elem in response.data])
 
+        print('Elements in response.data: ')
+        for elem in response.data:
+            print('Identifier: ' + str(elem['identifier']) + ' ID: ' + str(elem['id']) + ' Name: ' + elem['full_name'])
+        assert False
+
+
     def test_activate_repo(self):
         url = reverse('api:repository-detail', args=(self.repo.pk,))
         activate_repo_request = self.factory.patch(url, {'active': True})
