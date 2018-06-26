@@ -115,9 +115,7 @@ class RepositoryViewSet(
 
 
     @staticmethod
-    def UpdateOrCreateRepo(igitt_repo, provider, request):
-        # Orgs already checked for master access of the current user
-        checked_orgs = set()
+    def UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs):
 
         repo, created = Repository.objects.get_or_create(
             identifier=igitt_repo.identifier,
@@ -143,11 +141,14 @@ class RepositoryViewSet(
 
         for provider in Providers:
             try:
+                # Orgs already checked for master access of the current user
+                checked_orgs = set()
+
                 master_repos = gitmate_user.master_repos(provider)
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    repo = self.UpdateOrCreateRepo(igitt_repo, provider, request)
+                    repo, checked_orgs = self.UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs)
                     repo.save()
 
                 RepositoryViewSet.unlink_repos_for_provider(
