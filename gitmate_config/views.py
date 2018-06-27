@@ -131,7 +131,8 @@ class RepositoryViewSet(
 
         if repo.org is None:
             igitt_org, checked_orgs = RepositoryViewSet.AddAdminToOrg(repo, igitt_repo, provider, request, checked_orgs)
-        return repo, checked_orgs
+        repo.save()
+        return checked_orgs
 
     def list(self, request):
         if int(request.GET.get('cached', '1')) > 0:
@@ -148,8 +149,8 @@ class RepositoryViewSet(
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    repo, checked_orgs = self.UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs)
-                    repo.save()
+                    checked_orgs = self.UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs)
+
 
                 RepositoryViewSet.unlink_repos_for_provider(
                     user=request.user, provider=provider, repos=master_repos,
