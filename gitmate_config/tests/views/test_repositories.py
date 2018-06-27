@@ -56,6 +56,18 @@ class TestRepositories(GitmateTestCase):
         cached_response = self.repo_list(cached_get_repos_request)
         self.assertEqual(cached_response.data, response.data)
 
+    def test_repo_written_in_org(self):
+        self.assertEqual(self.repo.org, None)
+
+        uncached_get_repos_request = self.factory.get(self.repo_list_url,
+                                                      {'cached': '0'})
+        uncached_get_repos_request.user = self.user
+
+        self.repo_list(uncached_get_repos_request)
+        self.repo.refresh_from_db()
+
+        self.assertNotEqual(self.repo.org, None)
+
     def test_activate_repo_with_installation(self):
         url = reverse('api:repository-detail', args=(self.gh_app_repo.pk,))
         activate_repo_request = self.factory.patch(url, {'active': True})
