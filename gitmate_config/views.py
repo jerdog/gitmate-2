@@ -111,7 +111,7 @@ class RepositoryViewSet(
                 org.save()
 
             checked_orgs.add(org.name)
-        return igitt_org, checked_orgs
+        return checked_orgs
 
 
     @staticmethod
@@ -130,7 +130,7 @@ class RepositoryViewSet(
             repo.full_name = igitt_repo.full_name
 
         if repo.org is None:
-            igitt_org, checked_orgs = RepositoryViewSet.AddAdminToOrg(repo, igitt_repo, provider, request, checked_orgs)
+            checked_orgs = RepositoryViewSet.AddAdminToOrg(repo, igitt_repo, provider, request, checked_orgs)
         repo.save()
         return checked_orgs
 
