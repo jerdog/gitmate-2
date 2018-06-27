@@ -113,7 +113,6 @@ class RepositoryViewSet(
             checked_orgs.add(org.name)
         return checked_orgs
 
-
     @staticmethod
     def UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs):
 
@@ -130,7 +129,8 @@ class RepositoryViewSet(
             repo.full_name = igitt_repo.full_name
 
         if repo.org is None:
-            checked_orgs = RepositoryViewSet.AddAdminToOrg(repo, igitt_repo, provider, request, checked_orgs)
+            checked_orgs = RepositoryViewSet.AddAdminToOrg(
+                repo, igitt_repo, provider, request, checked_orgs)
         repo.save()
         return checked_orgs
 
@@ -149,8 +149,8 @@ class RepositoryViewSet(
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    checked_orgs = self.UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs)
-
+                    checked_orgs = self.UpdateOrCreateRepo(
+                        igitt_repo, provider, request, checked_orgs)
 
                 RepositoryViewSet.unlink_repos_for_provider(
                     user=request.user, provider=provider, repos=master_repos,
