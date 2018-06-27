@@ -136,7 +136,7 @@ class RepositoryViewSet(
                                 org.save()
 
                             checked_orgs.add(org.name)
-
+                        repo.org = org
                     repo.save()
 
                 RepositoryViewSet.unlink_repos_for_provider(

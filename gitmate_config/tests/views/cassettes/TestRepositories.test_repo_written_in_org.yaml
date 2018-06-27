@@ -1,0 +1,285 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"ba7a6aaa73b39ddf25117bbcbcb51bdd"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/orgs/GitMateIO/members?per_page=100&role=admin
+  response:
+    body: {string: ''}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Cache-Control: ['private, max-age=60, s-maxage=60']
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/octet-stream]
+      Date: ['Thu, 28 Jun 2018 10:46:26 GMT']
+      ETag: ['"ba7a6aaa73b39ddf25117bbcbcb51bdd"']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [304 Not Modified]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      Vary: ['Accept, Authorization, Cookie, X-GitHub-OTP']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Request-Id: ['D584:78A2:F4A3F6:20665FA:5B34BC81']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4994']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.043947']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 304, message: Not Modified}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/orgs/gitmate-test-user/members?per_page=100&role=admin
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAy3JMQqAMAwAwK9IXNUMbj7A0S+I2tAWmkaa1EX8uw5uB3cDk+rmCSZYxJpZanbQ
+        gZOjMmXbLEpea0nfB7NTJ0RHFyU5qQw+Wqj7cAjjNaIUr8jEOxXF9kefoho8L+UDFd9oAAAA
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Content-Encoding: [gzip]
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Thu, 28 Jun 2018 10:46:27 GMT']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [404 Not Found]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      X-Accepted-OAuth-Scopes: [repo]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Media-Type: [github.v3; format=json]
+      X-GitHub-Request-Id: ['C8D6:78A3:13C1A03:266725D:5B34BC82']
+      X-OAuth-Scopes: ['admin:gpg_key, admin:org, admin:org_hook, admin:public_key,
+          admin:repo_hook, delete_repo, gist, notifications, repo, user, write:discussion']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4993']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.024808']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 404, message: Not Found}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"208c0184173ec5a97427eeb528ad30be"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/users/gitmate-test-user?per_page=100
+  response:
+    body: {string: ''}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Cache-Control: ['private, max-age=60, s-maxage=60']
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/octet-stream]
+      Date: ['Thu, 28 Jun 2018 10:46:28 GMT']
+      ETag: ['"208c0184173ec5a97427eeb528ad30be"']
+      Last-Modified: ['Thu, 14 Jun 2018 13:19:40 GMT']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [304 Not Modified]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      Vary: ['Accept, Authorization, Cookie, X-GitHub-OTP']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Request-Id: ['C8D8:78A3:13C1B30:26674C1:5B34BC83']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4993']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.067643']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 304, message: Not Modified}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"ba7a6aaa73b39ddf25117bbcbcb51bdd"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/orgs/GitMateIO/members?per_page=100&role=admin
+  response:
+    body: {string: ''}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Cache-Control: ['private, max-age=60, s-maxage=60']
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/octet-stream]
+      Date: ['Thu, 28 Jun 2018 10:46:29 GMT']
+      ETag: ['"ba7a6aaa73b39ddf25117bbcbcb51bdd"']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [304 Not Modified]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      Vary: ['Accept, Authorization, Cookie, X-GitHub-OTP']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Request-Id: ['C8DA:78A2:F4A67F:2066BCE:5B34BC84']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4993']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.038786']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 304, message: Not Modified}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/orgs/gitmate-test-user/members?per_page=100&role=admin
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAy3JMQqAMAwAwK9IXNUMbj7A0S+I2tAWmkaa1EX8uw5uB3cDk+rmCSZYxJpZanbQ
+        gZOjMmXbLEpea0nfB7NTJ0RHFyU5qQw+Wqj7cAjjNaIUr8jEOxXF9kefoho8L+UDFd9oAAAA
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Content-Encoding: [gzip]
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Thu, 28 Jun 2018 10:46:30 GMT']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [404 Not Found]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      X-Accepted-OAuth-Scopes: [repo]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Media-Type: [github.v3; format=json]
+      X-GitHub-Request-Id: ['C8DC:78A2:F4A756:2066DDE:5B34BC85']
+      X-OAuth-Scopes: ['admin:gpg_key, admin:org, admin:org_hook, admin:public_key,
+          admin:repo_hook, delete_repo, gist, notifications, repo, user, write:discussion']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4992']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.051535']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 404, message: Not Found}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"208c0184173ec5a97427eeb528ad30be"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/users/gitmate-test-user?per_page=100
+  response:
+    body: {string: ''}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Cache-Control: ['private, max-age=60, s-maxage=60']
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/octet-stream]
+      Date: ['Thu, 28 Jun 2018 10:46:31 GMT']
+      ETag: ['"208c0184173ec5a97427eeb528ad30be"']
+      Last-Modified: ['Thu, 14 Jun 2018 13:19:40 GMT']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [304 Not Modified]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      Vary: ['Accept, Authorization, Cookie, X-GitHub-OTP']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Request-Id: ['C8DE:78A3:13C1E5B:2667B86:5B34BC86']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4992']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.066182']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 304, message: Not Modified}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 16dd948de514c16ddb7e27f756aa4887a0074ba9]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"ba7a6aaa73b39ddf25117bbcbcb51bdd"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://api.github.com/orgs/GitMateIO/members?per_page=100&role=admin
+  response:
+    body: {string: ''}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit,
+          X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+          X-Poll-Interval']
+      Cache-Control: ['private, max-age=60, s-maxage=60']
+      Content-Security-Policy: [default-src 'none']
+      Content-Type: [application/octet-stream]
+      Date: ['Thu, 28 Jun 2018 10:46:32 GMT']
+      ETag: ['"ba7a6aaa73b39ddf25117bbcbcb51bdd"']
+      Referrer-Policy: ['origin-when-cross-origin, strict-origin-when-cross-origin']
+      Server: [GitHub.com]
+      Status: [304 Not Modified]
+      Strict-Transport-Security: [max-age=31536000; includeSubdomains; preload]
+      Vary: ['Accept, Authorization, Cookie, X-GitHub-OTP']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [deny]
+      X-GitHub-Request-Id: ['C8E0:789D:88762F:13845D4:5B34BC87']
+      X-RateLimit-Limit: ['5000']
+      X-RateLimit-Remaining: ['4992']
+      X-RateLimit-Reset: ['1530184951']
+      X-Runtime-rack: ['0.038481']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 304, message: Not Modified}
+version: 1
