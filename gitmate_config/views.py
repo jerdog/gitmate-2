@@ -93,28 +93,16 @@ class RepositoryViewSet(
             provider=provider.value,
             defaults={'primary_user': request.user})
 
-        if created or (
-            org.name not in checked_orgs
-            and request.user not in org.admins.all()
-        ):
-            masters = {m.identifier for m in igitt_org.masters}
-            for admin in repo.admins.all():
-                if admin.social_auth.get(
-                        provider=repo.provider
-                ).extra_data['id'] in masters:
-                    org.admins.add(admin)
+        if created:
+            # The user who first lists a repo will also be
+            # able to manage the org as he's the only one
+            org.admins.add(request.user)
+            org.save()
 
-            if created:
-                # The user who first lists a repo will also be
-                # able to manage the org as he's the only one
-                org.admins.add(request.user)
-                org.save()
-
-            checked_orgs.add(org.name)
-        return checked_orgs
+        return org, created
 
     @staticmethod
-    def UpdateOrCreateRepo(igitt_repo, provider, request, checked_orgs):
+    def UpdateOrCreateRepoInDatabase(igitt_repo, provider, request, checked_orgs):
 
         repo, created = Repository.objects.get_or_create(
             identifier=igitt_repo.identifier,
@@ -146,11 +134,24 @@ class RepositoryViewSet(
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    checked_orgs = self.UpdateOrCreateRepo(
+                    repo = self.UpdateOrCreateRepoInDatabase(
                         igitt_repo, provider, request, checked_orgs)
                     if repo.org is None:
-                        checked_orgs = self.UpdateOrCreateOrgInDatabase(
+                        org, created = self.UpdateOrCreateOrgInDatabase(
                             repo, igitt_repo, provider, request, checked_orgs)
+                        igitt_org = igitt_repo.top_level_org
+                        if created or (
+                            org.name not in checked_orgs
+                            and request.user not in org.admins.all()
+                        ):
+                            masters = {m.identifier for m in igitt_org.masters}
+                            for admin in repo.admins.all():
+                                if admin.social_auth.get(
+                                        provider=repo.provider
+                                ).extra_data['id'] in masters:
+                                    org.admins.add(admin)
+
+                            checked_orgs.add(org.name)
 
                 RepositoryViewSet.unlink_repos_for_provider(
                     user=request.user, provider=provider, repos=master_repos,
