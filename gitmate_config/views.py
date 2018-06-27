@@ -84,6 +84,18 @@ class RepositoryViewSet(
         divert_access_to_repos(inaccessible_repos, user)
 
     @staticmethod
+    def AddRepoAdminToOrgAdmins(repo, org, igitt_org):
+
+        masters = {m.identifier for m in igitt_org.masters}
+        for admin in repo.admins.all():
+            if admin.social_auth.get(
+                    provider=repo.provider
+            ).extra_data['id'] in masters:
+                org.admins.add(admin)
+
+        return org
+
+    @staticmethod
     def UpdateOrCreateOrgInDatabase(igitt_org, provider, request):
 
         org, created = Organization.objects.get_or_create(
@@ -143,12 +155,8 @@ class RepositoryViewSet(
                             org.name not in checked_orgs
                             and request.user not in org.admins.all()
                         ):
-                            masters = {m.identifier for m in igitt_org.masters}
-                            for admin in repo.admins.all():
-                                if admin.social_auth.get(
-                                        provider=repo.provider
-                                ).extra_data['id'] in masters:
-                                    org.admins.add(admin)
+                            org = self.AddRepoAdminToOrgAdmins(
+                                repo, org, igitt_org)
 
                             checked_orgs.add(org.name)
 
