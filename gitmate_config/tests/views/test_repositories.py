@@ -47,6 +47,10 @@ class TestRepositories(GitmateTestCase):
 
         uncached_get_repos_request.user = self.user
         response = self.repo_list(uncached_get_repos_request)
+        print('Elements in response.data completely free of mocking')
+        for elem in response.data:
+            print('Identifier: ' + str(elem['identifier']) + ' ID: ' +
+                  str(elem['id']) + ' Name: ' + elem['full_name'] + ' Provider: ' + elem['provider'])
         self.assertIn(os.environ['GITHUB_TEST_REPO'],
                       [elem['full_name'] for elem in response.data])
         self.assertIn(os.environ['GITLAB_TEST_REPO'],
@@ -55,6 +59,7 @@ class TestRepositories(GitmateTestCase):
 
         cached_response = self.repo_list(cached_get_repos_request)
         self.assertEqual(cached_response.data, response.data)
+        assert False
 
     def test_activate_repo_with_installation(self):
         url = reverse('api:repository-detail', args=(self.gh_app_repo.pk,))
