@@ -78,8 +78,16 @@ class TestRepositories(GitmateTestCase):
         uncached_get_repos_request.user = self.user
 
         unmocked_result = GitMateUser(self.user).master_repos(Providers.GITHUB)
+        print('Unmocked_Result directly from GitMate.User (before MagicMock): ' +
+              str(unmocked_result))
         GitMateUser.master_repos = MagicMock(return_value=unmocked_result)
+        print('Unchanged Result after MagicMock: ' +
+              str(GitMateUser.master_repos))
         response = self.repo_list(uncached_get_repos_request)
+        print('Elements in response.data with MagicMock before changing the data: ')
+        for elem in response.data:
+            print('Identifier: ' + str(elem['identifier']) + ' ID: ' +
+                  str(elem['id']) + ' Name: ' + elem['full_name'] + ' Provider: ' + elem['provider'])
         self.assertIn(os.environ['GITHUB_TEST_REPO'],
                       [elem['full_name'] for elem in response.data])
 
@@ -91,11 +99,11 @@ class TestRepositories(GitmateTestCase):
         self.assertIn('gitmate-test-user/test-mocked-renaming',
                       [elem['full_name'] for elem in response.data])
 
-        print('Elements in response.data: ')
+        print('Elements in response.data with MagicMock after changing the data: ')
         for elem in response.data:
-            print('Identifier: ' + str(elem['identifier']) + ' ID: ' + str(elem['id']) + ' Name: ' + elem['full_name'])
+            print('Identifier: ' + str(elem['identifier']) + ' ID: ' +
+                  str(elem['id']) + ' Name: ' + elem['full_name'])
         assert False
-
 
     def test_activate_repo(self):
         url = reverse('api:repository-detail', args=(self.repo.pk,))
