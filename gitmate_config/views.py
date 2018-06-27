@@ -84,7 +84,7 @@ class RepositoryViewSet(
         divert_access_to_repos(inaccessible_repos, user)
 
     @staticmethod
-    def AddAdminToOrg(repo, igitt_repo, provider, request, checked_orgs):
+    def UpdateOrCreateOrgInDatabase(repo, igitt_repo, provider, request, checked_orgs):
 
         igitt_org = igitt_repo.top_level_org
 
@@ -128,11 +128,8 @@ class RepositoryViewSet(
         if not created:
             repo.full_name = igitt_repo.full_name
 
-        if repo.org is None:
-            checked_orgs = RepositoryViewSet.AddAdminToOrg(
-                repo, igitt_repo, provider, request, checked_orgs)
         repo.save()
-        return checked_orgs
+        return repo
 
     def list(self, request):
         if int(request.GET.get('cached', '1')) > 0:
@@ -151,6 +148,9 @@ class RepositoryViewSet(
                 for igitt_repo in master_repos:
                     checked_orgs = self.UpdateOrCreateRepo(
                         igitt_repo, provider, request, checked_orgs)
+                    if repo.org is None:
+                        checked_orgs = self.UpdateOrCreateOrgInDatabase(
+                            repo, igitt_repo, provider, request, checked_orgs)
 
                 RepositoryViewSet.unlink_repos_for_provider(
                     user=request.user, provider=provider, repos=master_repos,
