@@ -84,9 +84,7 @@ class RepositoryViewSet(
         divert_access_to_repos(inaccessible_repos, user)
 
     @staticmethod
-    def UpdateOrCreateOrgInDatabase(repo, igitt_repo, provider, request):
-
-        igitt_org = igitt_repo.top_level_org
+    def UpdateOrCreateOrgInDatabase(igitt_org, provider, request):
 
         org, created = Organization.objects.get_or_create(
             name=igitt_org.name,
@@ -137,9 +135,10 @@ class RepositoryViewSet(
                     repo = self.UpdateOrCreateRepoInDatabase(
                         igitt_repo, provider, request)
                     if repo.org is None:
-                        org, created = self.UpdateOrCreateOrgInDatabase(
-                            repo, igitt_repo, provider, request)
                         igitt_org = igitt_repo.top_level_org
+                        org, created = self.UpdateOrCreateOrgInDatabase(
+                            igitt_org, provider, request)
+
                         if created or (
                             org.name not in checked_orgs
                             and request.user not in org.admins.all()
