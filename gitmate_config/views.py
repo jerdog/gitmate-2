@@ -83,6 +83,75 @@ class RepositoryViewSet(
         # give the access to someone else otherwise
         divert_access_to_repos(inaccessible_repos, user)
 
+    @staticmethod
+    def update_org_admins(repo, org, igitt_org) -> Organization:
+        """
+        Updates or creates database entries for the repos.
+
+        org:
+        The updated database entry for the organization.
+        Now containing the repo admin if the admin has master rights for the
+        organization.
+        """
+        masters = {m.identifier for m in igitt_org.masters}
+        for admin in repo.admins.all():
+            if admin.social_auth.get(
+                    provider=repo.provider
+            ).extra_data['id'] in masters:
+                org.admins.add(admin)
+                org.save()
+
+        return org
+
+    @staticmethod
+    def update_or_create_org_in_database(
+            igitt_org, provider, request) -> Organization:
+        """
+        Updates or creates database entries for the organizations.
+
+        org:
+        The Database entry for the organization.
+
+        created:
+        Boolean: True if created. False if updated.
+        """
+        org, created = Organization.objects.get_or_create(
+            name=igitt_org.name,
+            provider=provider.value,
+            defaults={'primary_user': request.user})
+
+        if created:
+            # The user who first lists a repo will also be
+            # able to manage the org as he's the only one
+            org.admins.add(request.user)
+            org.save()
+
+        return org, created
+
+    @staticmethod
+    def update_or_create_repo_in_database(
+            igitt_repo, provider, request) -> Repository:
+        """
+        Updates or creates database entries for the repos.
+
+        repo:
+        The Database entry for the repo.
+        """
+        repo, created = Repository.objects.get_or_create(
+            identifier=igitt_repo.identifier,
+            provider=provider.value,
+            defaults={'active': False,
+                      'user': request.user,
+                      'full_name': igitt_repo.full_name,
+                      'identifier': igitt_repo.identifier})
+        repo.admins.add(request.user)
+
+        if not created:
+            repo.full_name = igitt_repo.full_name
+
+        repo.save()
+        return repo
+
     def list(self, request):
         if int(request.GET.get('cached', '1')) > 0:
             return super().list(request)
@@ -98,42 +167,19 @@ class RepositoryViewSet(
                 repo_ids = [repo.identifier for repo in master_repos]
 
                 for igitt_repo in master_repos:
-                    repo, created = Repository.objects.get_or_create(
-                        identifier=igitt_repo.identifier,
-                        provider=provider.value,
-                        defaults={'active': False,
-                                  'user': request.user,
-                                  'full_name': igitt_repo.full_name,
-                                  'identifier': igitt_repo.identifier})
-                    repo.admins.add(request.user)
-
-                    if not created:
-                        repo.full_name = igitt_repo.full_name
+                    repo = self.update_or_create_repo_in_database(
+                        igitt_repo, provider, request)
 
                     if repo.org is None:
                         igitt_org = igitt_repo.top_level_org
-
-                        org, created = Organization.objects.get_or_create(
-                            name=igitt_org.name,
-                            provider=provider.value,
-                            defaults={'primary_user': request.user})
+                        org, created = self.update_or_create_org_in_database(
+                            igitt_org, provider, request)
 
                         if created or (
                             org.name not in checked_orgs
                             and request.user not in org.admins.all()
                         ):
-                            masters = {m.identifier for m in igitt_org.masters}
-                            for admin in repo.admins.all():
-                                if admin.social_auth.get(
-                                        provider=repo.provider
-                                ).extra_data['id'] in masters:
-                                    org.admins.add(admin)
-
-                            if created:
-                                # The user who first lists a repo will also be
-                                # able to manage the org as he's the only one
-                                org.admins.add(request.user)
-                                org.save()
+                            org = self.update_org_admins(repo, org, igitt_org)
 
                             checked_orgs.add(org.name)
                         repo.org = org
