@@ -26,7 +26,7 @@ cache:
   - /root/.cache/pip
 
 run_tests: &run_tests
-  image: python:3
+  image: python:3.6
   stage: test
   services:
     - postgres:9.6

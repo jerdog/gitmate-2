@@ -1,4 +1,4 @@
-FROM python:3-stretch
+FROM python:3.6-stretch
 LABEL maintainer "Muhammad Kaisar Arkhan <yukinagato@protonmail.com>"
 
 ENV USER=gitmate ROOT=/usr/src/app NUM_WORKERS=3 LOG_LEVEL=DEBUG TIMEOUT=30 MIN=3 MAX=10
