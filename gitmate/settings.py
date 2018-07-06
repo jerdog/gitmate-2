@@ -231,6 +231,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gitmate.wsgi.application'
 
+# Cache
+# https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-CACHES
+
+if not literal_eval(os.environ.get('USE_DB_CACHE', 'False')):
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+else:  # pragma: no cover
+    # in production, use a database cache
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'igitt_cache',
+            'TIMEOUT': 60 * 60 * 24 * 7 * 4,  # 4 weeks (in seconds)
+            'OPTIONS': {'MAX_ENTRIES': 10 ** 9}  # 1 trillion
+        }
+    }
+
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

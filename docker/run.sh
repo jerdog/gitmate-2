@@ -9,6 +9,9 @@ python3 manage.py collectstatic --noinput
 echo "Migrating database ..."
 python3 manage.py migrate
 
+echo "Creating cache table ..."
+python3 manage.py createcachetable
+
 # For debugging: python3 manage.py runserver 0.0.0.0:8000
 exec gunicorn gitmate.wsgi \
     --name=gitmate \
