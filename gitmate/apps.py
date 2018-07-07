@@ -23,3 +23,8 @@ def get_all_plugins(
             (config.enable_on_repo_activation if default_only else True) and
             (config.plugin_name in repo.plugins if repo else True) and
             config.importable]
+
+
+def get_settings(plugin_name, repo):
+    config = apps.get_app_config(f'gitmate_{plugin_name}')
+    return config.get_settings(repo)

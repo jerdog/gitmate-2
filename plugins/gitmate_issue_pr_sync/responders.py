@@ -1,5 +1,4 @@
 from collections import defaultdict
-from django.apps import apps
 
 from IGitt.Interfaces.Actions import IssueActions
 from IGitt.Interfaces.Actions import MergeRequestActions
@@ -9,6 +8,7 @@ from IGitt.Interfaces.MergeRequest import MergeRequest
 from gitmate_config.models import Repository
 from gitmate.utils import lock_igitt_object
 from gitmate_hooks.utils import ResponderRegistrar
+from gitmate.apps import get_settings
 from .models import MergeRequestModel
 
 
@@ -28,17 +28,14 @@ def sync_updated_pr_with_issue(pr: MergeRequest,
 
     with lock_igitt_object('label mr', pr):
         temp_labels = pr.labels
-        config = apps.get_app_config('gitmate_pr_size_labeller')
-        settings = config.get_settings(repo)
+        settings = get_settings('pr_size_labeller', repo)
         size_scheme = settings['size_scheme']
         ignore = {size_scheme.format(size=letter)
                   for letter in ['S', 'XS', 'M', 'L', 'XL', 'XXL']}
-        config = apps.get_app_config('gitmate_auto_label_pending_or_wip')
-        settings = config.get_settings(repo)
+        settings = get_settings('auto_label_pending_or_wip', repo)
         ignore.add(settings['wip_label'])
         ignore.add(settings['pending_review_label'])
-        config = apps.get_app_config('gitmate_approver')
-        settings = config.get_settings(repo)
+        settings = get_settings('approver', repo)
         ignore.add(settings['approved_label'])
         labels = ignore & temp_labels
         for issue in issues:
