@@ -14,8 +14,10 @@ from django_pglocks import advisory_lock
 
 
 from gitmate.utils import run_in_container
+from gitmate.utils import lock_igitt_object
 from gitmate_config.models import Repository
 from gitmate_hooks.utils import ResponderRegistrar
+from gitmate.apps import get_settings
 from .models import AnalysisResults
 
 
@@ -184,6 +186,10 @@ def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool=True,
 
     ref = get_ref(pr)
     pr_status = Status.SUCCESS
+    labels = pr.labels
+    config = get_settings('auto_label_pending_or_wip', repo)
+    wip_label = config['wip_label']
+    pending_label = config['pending_review_label']
 
     try:
         # Spawn a coala container for base commit to generate old results.
@@ -201,6 +207,8 @@ def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool=True,
             # set pr status as failed if any results are found
             if any(s_results for _, s_results in filtered_results.items()):
                 pr_status = Status.FAILED
+                labels.add(wip_label)
+                labels.discard(pending_label)
 
         else:  # Run coala per commit
             for commit in COMMITS:
@@ -217,6 +225,8 @@ def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool=True,
                 if any(s_results for _, s_results in filtered_results.items()):
                     pr_status = Status.FAILED
                     status = Status.FAILED
+                    labels.add(wip_label)
+                    labels.discard(pending_label)
                 else:
                     status = Status.SUCCESS
 
@@ -224,6 +234,8 @@ def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool=True,
                 ANALYZED_COMMITS.add(commit)
 
         _set_status(pr.head, pr_status, 'review/gitmate/pr')
+        with lock_igitt_object('label mr', pr):
+            pr.labels = labels
 
     except BaseException as exc:  # pragma: no cover
         # Attempt to set ``Status.ERROR`` for all commits that were not

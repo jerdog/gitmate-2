@@ -3,11 +3,14 @@ import json
 from os import environ
 import subprocess
 from unittest.mock import patch
+from unittest.mock import PropertyMock
 
 from gitmate_config.tests.test_base import GitmateTestCase
 from gitmate_config.tests.test_base import StreamMock
 from IGitt.GitHub.GitHubCommit import GitHubCommit
+from IGitt.GitHub.GitHubMergeRequest import GitHubMergeRequest
 from IGitt.GitLab.GitLabCommit import GitLabCommit
+from IGitt.GitLab.GitLabMergeRequest import GitLabMergeRequest
 from rest_framework.status import HTTP_200_OK
 
 
@@ -93,8 +96,9 @@ class TestCodeAnalysis(GitmateTestCase):
         subprocess.Popen = self.old_popen
 
     @patch.object(GitHubCommit, 'comment')
+    @patch.object(GitHubMergeRequest, 'labels', new_callable=PropertyMock)
     def test_pr_analysis_no_issues_github(
-        self, comment_mock, _, pr_based=False
+        self, labels_mock, comment_mock, _, pr_based=False
     ):
         self.repo.settings = [
             {
@@ -119,18 +123,21 @@ class TestCodeAnalysis(GitmateTestCase):
             assert 'run.py' in cmd
             return popen_coala()
 
+        labels_mock.return_value = {'process/pending_review'}
         subprocess.Popen = fake_popen
 
         response = self.simulate_github_webhook_call(
             'pull_request', self.github_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
         comment_mock.assert_not_called()
+        labels_mock.assert_called_with({'process/pending_review'})
 
     def test_pr_analysis_no_issues_pr_based_github(self, *args):
         return self.test_pr_analysis_no_issues_github(pr_based=True)
 
     @patch.object(GitHubCommit, 'comment')
-    def test_pr_analysis_issues_github(self, comment_mock, _):
+    @patch.object(GitHubMergeRequest, 'labels', new_callable=PropertyMock)
+    def test_pr_analysis_issues_github(self, labels_mock, comment_mock, _):
         def fake_popen(cmd, **kwargs):
             if 'bouncer.py' in cmd:
                 return popen_bouncer()
@@ -170,15 +177,20 @@ class TestCodeAnalysis(GitmateTestCase):
                 lambda *args, **kwargs: None
             )
 
+        labels_mock.return_value = {'process/pending_review'}
         subprocess.Popen = fake_popen
         response = self.simulate_github_webhook_call(
             'pull_request', self.github_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         assert comment_mock.call_count == 2
+        labels_mock.assert_called_with({'process/WIP'})
 
     @patch.object(GitHubCommit, 'comment')
-    def test_pr_analysis_many_issues_github(self, comment_mock, _):
+    @patch.object(GitHubMergeRequest, 'labels', new_callable=PropertyMock)
+    def test_pr_analysis_many_issues_github(
+        self, labels_mock, comment_mock, _
+    ):
         self.repo.settings = [
             {
                 'name': 'code_analysis',
@@ -212,6 +224,7 @@ class TestCodeAnalysis(GitmateTestCase):
                 lambda *args, **kwargs: None
             )
 
+        labels_mock.return_value = {'process/pending_review'}
         subprocess.Popen = fake_popen
         response = self.simulate_github_webhook_call(
             'pull_request', self.github_data)
@@ -219,10 +232,12 @@ class TestCodeAnalysis(GitmateTestCase):
 
         # More than three results, one summary comment
         comment_mock.assert_called_once()
+        labels_mock.assert_called_with({'process/WIP'})
 
     @patch.object(GitLabCommit, 'comment')
+    @patch.object(GitLabMergeRequest, 'labels', new_callable=PropertyMock)
     def test_pr_analysis_no_issues_gitlab(
-        self, comment_mock, _, pr_based=False
+        self, labels_mock, comment_mock, _, pr_based=False
     ):
         self.repo.settings = [
             {
@@ -233,16 +248,34 @@ class TestCodeAnalysis(GitmateTestCase):
             }
         ]
 
+        def popen_bouncer():
+            return PopenResult(
+                StreamMock('{}'),
+                StreamMock(self.BOUNCER_INPUT),
+                lambda *args, **kwargs: None
+            )
+
+        def fake_popen(cmd, **kwargs):
+            if 'bouncer.py' in cmd:
+                return popen_bouncer()
+
+            assert 'run.py' in cmd
+            return popen_coala()
+
+        labels_mock.return_value = {'process/pending_review'}
+        subprocess.Popen = fake_popen
         response = self.simulate_gitlab_webhook_call(
             'Merge Request Hook', self.gitlab_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
         comment_mock.assert_not_called()
+        labels_mock.assert_called_with({'process/pending_review'})
 
     def test_pr_analysis_no_issues_pr_based_gitlab(self, *args):
         return self.test_pr_analysis_no_issues_gitlab(pr_based=True)
 
     @patch.object(GitLabCommit, 'comment')
-    def test_pr_analysis_issues_gitlab(self, comment_mock, _):
+    @patch.object(GitLabMergeRequest, 'labels', new_callable=PropertyMock)
+    def test_pr_analysis_issues_gitlab(self, labels_mock, comment_mock, _):
         def fake_popen(cmd, **kwargs):
             if 'bouncer.py' in cmd:
                 return popen_bouncer()
@@ -282,15 +315,20 @@ class TestCodeAnalysis(GitmateTestCase):
                 lambda *args, **kwargs: None
             )
 
+        labels_mock.return_value = {'process/pending_review'}
         subprocess.Popen = fake_popen
         response = self.simulate_gitlab_webhook_call(
             'Merge Request Hook', self.gitlab_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         assert comment_mock.call_count == 2
+        labels_mock.assert_called_with({'process/WIP'})
 
     @patch.object(GitLabCommit, 'comment')
-    def test_pr_analysis_many_issues_gitlab(self, comment_mock, _):
+    @patch.object(GitLabMergeRequest, 'labels', new_callable=PropertyMock)
+    def test_pr_analysis_many_issues_gitlab(
+        self, labels_mock, comment_mock, _
+    ):
         self.repo.settings = [
             {
                 'name': 'code_analysis',
@@ -324,6 +362,7 @@ class TestCodeAnalysis(GitmateTestCase):
                 lambda *args, **kwargs: None
             )
 
+        labels_mock.return_value = {'process/pending_review'}
         subprocess.Popen = fake_popen
         response = self.simulate_gitlab_webhook_call(
             'Merge Request Hook', self.gitlab_data)
@@ -331,3 +370,4 @@ class TestCodeAnalysis(GitmateTestCase):
 
         # More than three results, one summary comment
         comment_mock.assert_called_once()
+        labels_mock.assert_called_with({'process/WIP'})
