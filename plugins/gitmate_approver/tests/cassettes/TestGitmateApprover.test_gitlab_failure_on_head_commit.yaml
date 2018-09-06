@@ -198,4 +198,38 @@ interactions:
       X-Request-Id: [9966b902-376c-4f50-bfb2-efd68c9dbcdb]
       X-Runtime: ['0.175914']
     status: {code: 200, message: OK}
+- request:
+    body: '{}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer a184d6de9cbc9d9bf8bd769709b75327f28d54a54a9f9a8127e02a138493b6d3]
+      Connection: [keep-alive]
+      Content-Length: ['2']
+      Content-Type: [application/json]
+      If-None-Match: [W/"77c87837e6212449f5b39ba0ee9317c5"]
+      User-Agent: [IGitt]
+    method: GET
+    uri: https://gitlab.com/api/v4/projects/gitmate-test-user%2Ftest/merge_requests/24?per_page=100
+  response:
+    body: {string: '{"id":4311386,"iid":24,"project_id":3439658,"title":"Test ack/unack","description":"","state":"opened","created_at":"2017-07-19T05:14:34.989Z","updated_at":"2017-07-19T05:19:05.249Z","target_branch":"master","source_branch":"gitmate-test-user-patch-1","upvotes":0,"downvotes":0,"author":{"id":889700,"name":"Naveen","username":"nkprince007","state":"active","avatar_url":"https://secure.gravatar.com/avatar/2ed27920a4ec4445d0e390a30df7145d?s=80\u0026d=identicon","web_url":"https://gitlab.com/nkprince007"},"assignee":null,"source_project_id":3439658,"target_project_id":3439658,"labels":[],"work_in_progress":false,"milestone":null,"merge_when_pipeline_succeeds":false,"merge_status":"cannot_be_merged","sha":"8c31d04e826dc38e6b3e74143f83f9890b89c71c","merge_commit_sha":null,"user_notes_count":1,"discussion_locked":null,"should_remove_source_branch":null,"force_remove_source_branch":false,"web_url":"https://gitlab.com/gitmate-test-user/test/merge_requests/24","time_stats":{"time_estimate":0,"total_time_spent":0,"human_time_estimate":null,"human_total_time_spent":null},"squash":false,"subscribed":false,"changes_count":"2","merged_by":null,"merged_at":null,"closed_by":null,"closed_at":null,"latest_build_started_at":null,"latest_build_finished_at":null,"first_deployed_to_production_at":null,"pipeline":null,"diff_refs":{"base_sha":"674498fd415cfadc35c5eb28b8951e800f357c6f","head_sha":"8c31d04e826dc38e6b3e74143f83f9890b89c71c","start_sha":"198dd16f8249ea98ed41876efe27d068b69fa215"},"approvals_before_merge":null}'}
+    headers:
+      Cache-Control: ['max-age=0, private, must-revalidate']
+      Content-Length: ['1523']
+      Content-Type: [application/json]
+      Date: ['Thu, 06 Sep 2018 16:49:56 GMT']
+      Etag: [W/"d7c7ce4a2f359c809123dde421924fe9"]
+      RateLimit-Limit: ['600']
+      RateLimit-Observed: ['3']
+      RateLimit-Remaining: ['597']
+      RateLimit-Reset: ['1536252656']
+      RateLimit-ResetTime: ['Fri, 06 Sep 2018 16:50:56 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000]
+      Vary: [Origin]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-Request-Id: [b5d6e00e-c977-4576-90be-4212e93fdfb0]
+      X-Runtime: ['0.082035']
+    status: {code: 200, message: OK}
 version: 1

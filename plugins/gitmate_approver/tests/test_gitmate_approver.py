@@ -136,3 +136,50 @@ class TestGitmateApprover(GitmateTestCase):
         m_labels.assert_called()
         # adds approved_label and removes status_labels
         m_labels.assert_called_with({'WIP'})
+
+    @patch.object(GitHubMergeRequest, 'labels',
+                  new_callable=PropertyMock, return_value={'WIP', 'approved'})
+    def test_github_closed_pr(self, m_labels):
+        data = {
+            'repository': {'full_name': environ['GITHUB_TEST_REPO'],
+                           'id': 49558751},
+            'pull_request': {'number': 5},
+            'action': 'synchronize'
+        }
+        response = self.simulate_github_webhook_call('pull_request', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # now check the labels on status change
+        data = {
+            'repository': {'full_name': environ['GITHUB_TEST_REPO'],
+                           'id': 49558751},
+            'commit': {'sha': '38e969aa17e4024b5b64f45be608eafe69049f23'}
+        }
+        response = self.simulate_github_webhook_call('status', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        m_labels.assert_not_called()
+
+    @patch.object(GitLabMergeRequest, 'labels',
+                  new_callable=PropertyMock, return_value={'WIP', 'approved'})
+    def test_gitlab_closed_pr(self, m_labels):
+        data = {
+            'object_attributes': {
+                'target': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
+                'action': 'open',
+                'iid': 12
+            }
+        }
+        response = self.simulate_gitlab_webhook_call(
+            'Merge Request Hook', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # now check the labels on status change
+        data = {
+            'project': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
+            'commit': {'id': 'b315282d00f2cff0b181fcc277309f2a08163a8e'}
+        }
+        response = self.simulate_gitlab_webhook_call('Pipeline Hook', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        m_labels.assert_not_called()

@@ -3,6 +3,7 @@ from IGitt.Interfaces.Actions import PipelineActions
 from IGitt.Interfaces.Commit import Commit
 from IGitt.Interfaces.CommitStatus import Status
 from IGitt.Interfaces.MergeRequest import MergeRequest
+from IGitt.Interfaces import MergeRequestStates
 
 from gitmate_config.models import Repository
 from gitmate.utils import lock_igitt_object
@@ -41,6 +42,8 @@ def add_approved_label(
 
     for db_pr in MergeRequestModel.objects.filter(head_sha=commit.sha):
         pr = db_pr.igitt_pr
+        if pr.state in (MergeRequestStates.CLOSED, MergeRequestStates.MERGED):
+            continue
         with lock_igitt_object('label mr', pr):
             labels = pr.labels
             if commit.combined_status is Status.SUCCESS:
