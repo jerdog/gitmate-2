@@ -13,9 +13,9 @@ from .views import UserViewSet
 app_name = 'gitmate_config'
 
 router = DefaultRouter()
-router.register(r'repos', RepositoryViewSet, base_name='repository')
-router.register(r'plugins', PluginSettingsViewSet, base_name='settings')
-router.register(r'users', UserViewSet, base_name='users')
+router.register(r'repos', RepositoryViewSet, basename='repository')
+router.register(r'plugins', PluginSettingsViewSet, basename='settings')
+router.register(r'users', UserViewSet, basename='users')
 urlpatterns = router.urls
 
 plugin_routes = [
