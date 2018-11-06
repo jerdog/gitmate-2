@@ -24,4 +24,4 @@ class CacheTestCase(RecordedTestCase):
         new_entry = json.loads(cache.get(self.repo.url))
         self.assertIsNotNone(new_entry)
 
-        self.assertEquals(new_entry['lastFetched'], old_entry['lastFetched'])
+        self.assertEqual(new_entry['lastFetched'], old_entry['lastFetched'])

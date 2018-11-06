@@ -19,4 +19,4 @@ class TestInstallation(GitmateTestCase):
             self.gh_inst)
 
     def test_token(self):
-        self.assertRegexpMatches(self.gh_inst.token.value, 'v1\.[0-9a-f]{40}')
+        self.assertRegex(self.gh_inst.token.value, r'v1\.[0-9a-f]{40}')

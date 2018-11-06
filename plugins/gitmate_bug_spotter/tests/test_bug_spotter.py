@@ -19,7 +19,7 @@ from gitmate_config.tests.test_base import GitmateTestCase
 def generate_fake_bugspots(hotspot_files):
     @attr.s
     class BugspotsResult:
-        filename = attr.ib(convert=str)
+        filename = attr.ib(converter=str)
 
     class FakeBugspots:
         def __init__(self, *args, **kwargs):

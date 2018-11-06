@@ -50,7 +50,7 @@ class TestGitmatePrRejector(GitmateTestCase):
         self.repo.settings = [{
             'name': 'pr_rejector',
             'settings': {
-                'branch_names': ['release\/.*'],
+                'branch_names': [r'release\/.*'],
                 'message': 'Open PR on a different source branch that '
                            'does not start with `release/`'
             }
@@ -103,7 +103,7 @@ class TestGitmatePrRejector(GitmateTestCase):
         self.gl_repo.settings = [{
             'name': 'pr_rejector',
             'settings': {
-                'branch_names': ['release\/.*'],
+                'branch_names': [r'release\/.*'],
                 'message': 'Open PR on a different source branch that '
                            'does not start with `release/`'
             }

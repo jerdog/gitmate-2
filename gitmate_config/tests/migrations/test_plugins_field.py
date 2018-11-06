@@ -41,4 +41,4 @@ class RepositoryPluginFieldMigrationTestCase(MigrationTestCase):
         self.assertIsInstance(repo.plugins, list)
 
         # assert that new plugins field contains `testplugin`
-        self.assertEquals(repo.plugins, ['testplugin'])
+        self.assertEqual(repo.plugins, ['testplugin'])
