@@ -363,7 +363,7 @@ CELERY_BROKER_POOL_LIMIT = None
 
 # This is required for coala_online
 # Otherwise it throws NotImplementedError
-CELERY_RESULT_BACKEND = 'amqp'
+CELERY_RESULT_BACKEND = 'rpc'
 
 # Setting the task timeout hard limit to one hour
 CELERYD_TASK_TIME_LIMIT = 3600
