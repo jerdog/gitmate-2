@@ -39,6 +39,7 @@ else
     echo "DOCKER_HOST is defined."
 fi
 
+echo "Starting celery worker..."
 exec celery worker \
             -A gitmate \
             --uid=$USER --gid=$USER \

@@ -10,10 +10,11 @@ if [ ! -d "$BEAT_SCHEDULE_FOLDER" ]; then
     chown $USER:$USER $BEAT_SCHEDULE_FOLDER
 fi
 
+echo "Starting celery beat scheduler..."
 exec celery beat \
             -A gitmate \
             -s $BEAT_SCHEDULE_FILE \
-	    --uid=$USER --gid=$USER \
+            --uid=$USER --gid=$USER \
             --loglevel=info \
             --pidfile=$BEAT_PID_FILE \
             $EXTRA_ARGUMENTS

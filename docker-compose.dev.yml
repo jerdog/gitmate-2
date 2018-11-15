@@ -1,0 +1,55 @@
+version: '3'
+services:
+  dind:
+    image: docker:stable-dind
+    privileged: true
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  rabbit:
+    image: rabbitmq:3.6
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+  backend:
+    build: .
+    command: ./docker/run.dev.sh
+    ports:
+      - "8000:8000"
+    env_file: ./docker/environment
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+  worker:
+    build: .
+    command: ./docker/run-worker.sh
+    env_file: ./docker/environment
+    environment:
+      - DOCKER_HOST=tcp://dind:2375
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - rabbit
+      - backend
+      - dind
+  beat:
+    build: .
+    command: ./docker/run-beat.sh
+    env_file: ./docker/environment
+    environment:
+      - DOCKER_HOST=tcp://dind:2375
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - rabbit
+      - backend
+      - dind
+
+volumes:
+  db_data: {}

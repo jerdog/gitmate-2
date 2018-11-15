@@ -1,7 +1,15 @@
 FROM python:3.6-stretch
 LABEL maintainer "Muhammad Kaisar Arkhan <yukinagato@protonmail.com>"
 
-ENV USER=gitmate ROOT=/usr/src/app NUM_WORKERS=3 LOG_LEVEL=DEBUG TIMEOUT=30 MIN=3 MAX=10
+ENV USER=gitmate \
+    ROOT=/usr/src/app \
+    NUM_WORKERS=3 \
+    LOG_LEVEL=DEBUG \
+    TIMEOUT=30 \
+    MIN=3 \
+    MAX=10 \
+    DB_HOST=db \
+    DB_PORT=5432
 
 EXPOSE 8000
 
@@ -28,7 +36,7 @@ RUN set -ex && \
     \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-            libpq5 git docker-ce $buildDeps && \
+        postgresql-client libpq5 git docker-ce $buildDeps && \
     \
     pip install --no-cache-dir -r $ROOT/requirements.txt && \
     ./install_deps.sh && \
