@@ -1,6 +1,6 @@
 [all]
 files = **.py
-ignore = **/migrations/**
+ignore = **/migrations/**, .venv/**
 language = python
 use_spaces = True
 
@@ -12,7 +12,7 @@ ignore_length_regex = https?://
 
 [all.python.spacing]
 bears = PEP8Bear, PyCommentedCodeBear, PyUnusedCodeBear
-ignore = **/migrations/**
+ignore = **/migrations/**, .venv/**
 remove_all_unused_imports = True
 
 [all.commit]

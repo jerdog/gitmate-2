@@ -17,3 +17,6 @@ tags
 .coverage
 .cache/
 .htmlreport/
+static
+.venv
+celerybeat-schedule
