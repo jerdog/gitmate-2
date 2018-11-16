@@ -12,12 +12,14 @@ def check_presence_of_issue_weight(issue: Issue,
                                    *args,
                                    no_weight_label: str='weight/missing',
                                    check_issue_weight_presence: bool=False):
-    try:
-        if not check_issue_weight_presence or issue.weight is not None:
-            return
-        issue.labels |= {no_weight_label}
-    except NotImplementedError:
-        pass
+    if check_issue_weight_presence:
+        try:
+            if issue.weight is not None:
+                issue.labels -= {no_weight_label}
+                return
+            issue.labels |= {no_weight_label}
+        except NotImplementedError:
+            pass
 
 
 @ResponderRegistrar.responder('weighing_machine',
@@ -29,10 +31,11 @@ def check_for_overweight_issues(issue: Issue,
                                 check_overweight_issues: bool=False,
                                 max_issue_weight: int=4,
                                 max_weight_label: str='weight/overweight'):
-    try:
-        if not check_overweight_issues or issue.weight is None:
-            return
-        if issue.weight > max_issue_weight:
-            issue.labels |= {max_weight_label}
-    except NotImplementedError:
-        pass
+    if check_overweight_issues:
+        try:
+            if issue.weight is not None and issue.weight > max_issue_weight:
+                issue.labels |= {max_weight_label}
+                return
+            issue.labels -= {max_weight_label}
+        except NotImplementedError:
+            pass

@@ -11,10 +11,8 @@ from rest_framework import status
 from gitmate_config.tests.test_base import GitmateTestCase
 from IGitt.GitHub.GitHubCommit import GitHubCommit
 from IGitt.GitHub.GitHubIssue import GitHubIssue
-from IGitt.GitHub.GitHubMergeRequest import GitHubMergeRequest
 from IGitt.GitLab.GitLabCommit import GitLabCommit
 from IGitt.GitLab.GitLabIssue import GitLabIssue
-from IGitt.GitLab.GitLabMergeRequest import GitLabMergeRequest
 
 
 class TestGitmateWeighingMachine(GitmateTestCase):
@@ -56,7 +54,7 @@ class TestGitmateWeighingMachine(GitmateTestCase):
                   'labels',
                   new_callable=PropertyMock,
                   return_value={'happy-bot'})
-    def test_issue_weight_presence_gitlab(self, mocked_labels, _):
+    def test_issue_weight_presence_gitlab(self, m_labels, m_weight):
         data = {
             'object_attributes': {
                 'target': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
@@ -66,7 +64,27 @@ class TestGitmateWeighingMachine(GitmateTestCase):
         }
         response = self.simulate_gitlab_webhook_call('Issue Hook', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mocked_labels.assert_called_with({'happy-bot', 'weight/missing'})
+        m_labels.assert_called_with({'happy-bot', 'weight/missing'})
+
+        # when a weight is added, existing label should be removed
+        m_labels.return_value = {'happy-bot', 'weight/missing'}
+        m_weight.return_value = 3
+        data = {
+            'object_attributes': {
+                'target': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
+                'action': 'update',
+                'iid': 21
+            },
+            'changes': {
+                'weight': {
+                    'previous': None,
+                    'current': 3
+                }
+            }
+        }
+        response = self.simulate_gitlab_webhook_call('Issue Hook', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        m_labels.assert_called_with({'happy-bot'})
 
     @patch.object(GitHubIssue, 'labels', new_callable=PropertyMock)
     def test_issue_overweight_github(self, mocked_labels):
@@ -89,7 +107,7 @@ class TestGitmateWeighingMachine(GitmateTestCase):
                   'labels',
                   new_callable=PropertyMock,
                   return_value={'happy-bot'})
-    def test_issue_overweight_gitlab(self, mocked_labels, _):
+    def test_issue_overweight_gitlab(self, m_labels, m_weight):
         data = {
             'object_attributes': {
                 'target': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
@@ -105,4 +123,24 @@ class TestGitmateWeighingMachine(GitmateTestCase):
         }
         response = self.simulate_gitlab_webhook_call('Issue Hook', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mocked_labels.assert_called_with({'happy-bot', 'weight/overweight'})
+        m_labels.assert_called_with({'happy-bot', 'weight/overweight'})
+
+        # when weight is updated within range, existing label should be removed
+        m_labels.return_value = {'happy-bot', 'weight/overweight'}
+        m_weight.return_value = 3
+        data = {
+            'object_attributes': {
+                'target': {'path_with_namespace': environ['GITLAB_TEST_REPO']},
+                'action': 'update',
+                'iid': 21
+            },
+            'changes': {
+                'weight': {
+                    'previous': 8,
+                    'current': 3
+                }
+            }
+        }
+        response = self.simulate_gitlab_webhook_call('Issue Hook', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        m_labels.assert_called_with({'happy-bot'})
