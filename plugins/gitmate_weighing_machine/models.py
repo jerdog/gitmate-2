@@ -8,7 +8,7 @@ class Settings(SettingsBase):
         default=False,
         help_text='Checks for presence of a weight on newly opened issues')
     no_weight_label = models.TextField(
-        default='dev/missing-weight',
+        default='weight/missing',
         help_text='The label used to indicate that an issue was not associated'
                   'with a weight')
     check_overweight_issues = models.BooleanField(
@@ -18,6 +18,6 @@ class Settings(SettingsBase):
         default=4,
         help_text='The maximum weight that can be assigned to an issue')
     max_weight_label = models.TextField(
-        default='dev/over-weight',
+        default='weight/overweight',
         help_text='The label used to indicate that an issue has too much'
                   'weight and needs to be broken down into smaller chunks')

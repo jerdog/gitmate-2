@@ -66,7 +66,7 @@ class TestGitmateWeighingMachine(GitmateTestCase):
         }
         response = self.simulate_gitlab_webhook_call('Issue Hook', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mocked_labels.assert_called_with({'happy-bot', 'dev/missing-weight'})
+        mocked_labels.assert_called_with({'happy-bot', 'weight/missing'})
 
     @patch.object(GitHubIssue, 'labels', new_callable=PropertyMock)
     def test_issue_overweight_github(self, mocked_labels):
@@ -105,4 +105,4 @@ class TestGitmateWeighingMachine(GitmateTestCase):
         }
         response = self.simulate_gitlab_webhook_call('Issue Hook', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mocked_labels.assert_called_with({'happy-bot', 'dev/over-weight'})
+        mocked_labels.assert_called_with({'happy-bot', 'weight/overweight'})
