@@ -31,8 +31,8 @@ def store_head_commit_sha(pr: MergeRequest):
     'approver', PipelineActions.UPDATED)
 def add_approved_label(
         commit: Commit,
-        approved_label: str='status/ci-approved',
-        status_labels: str='status/pending_review, status/WIP'
+        approved_label: str = 'status/ci-approved',
+        status_labels: str = 'status/pending_review, status/WIP'
 ):
     """
     Labels the PR as approved when the head commit passes all tests.

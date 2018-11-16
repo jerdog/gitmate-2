@@ -181,7 +181,7 @@ class Repository(models.Model):
                 for k, v in plugin.get_settings(self).items()}
 
     @settings.setter
-    def settings(self, plugins: Optional[List]=None):
+    def settings(self, plugins: Optional[List] = None):
         """
         Sets the plugin settings for all plugins for the specified repo.
         """
@@ -227,7 +227,7 @@ class Repository(models.Model):
                 config.set_settings(self, plugin['settings'])
 
     @classmethod
-    def from_igitt_repo(cls, instance: IGittRepository, active: bool=True):
+    def from_igitt_repo(cls, instance: IGittRepository, active: bool = True):
         """
         Retrieves a repository model from an IGitt Repository instance.
 

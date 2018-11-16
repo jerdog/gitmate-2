@@ -10,7 +10,8 @@ from gitmate_hooks.utils import ResponderRegistrar
     MergeRequestActions.SYNCHRONIZED,
     MergeRequestActions.OPENED,
 )
-def add_labels_based_on_size(pr: MergeRequest, size_scheme: str='size/{size}'):
+def add_labels_based_on_size(pr: MergeRequest,
+                             size_scheme: str = 'size/{size}'):
     """
     Labels the pull request with size labels according to the amount of
     code touched, commits and files involved. Helps plan the review in

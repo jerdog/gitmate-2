@@ -18,12 +18,12 @@ class TestResponderRegistrar(GitmateTestCase):
 
         @ResponderRegistrar.responder(self.plugin,
                                       MergeRequestActions.OPENED)
-        def test_responder(obj, example_bool_setting: bool = True):
+        def test_responder(_, example_bool_setting: bool = True):
             return example_bool_setting
 
         @ResponderRegistrar.scheduled_responder(
             self.plugin, 100.00, is_active=True)
-        def scheduled_responder_function(obj, example_bool_setting: bool=True):
+        def scheduled_responder_function(_, example_bool_setting: bool = True):
             return example_bool_setting
 
     @patch.object(GitHubComment, 'body', new_callable=PropertyMock)
@@ -31,7 +31,7 @@ class TestResponderRegistrar(GitmateTestCase):
 
         @ResponderRegistrar.responder(self.plugin,
                                       MergeRequestActions.COMMENTED)
-        def test_blocked_responder(mr, comment, *args, **kwargs):
+        def test_blocked_responder(_, comment, *args, **kwargs):
             # this should never run
             return comment.body  # pragma: no cover
 

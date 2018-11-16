@@ -22,7 +22,7 @@ from gitmate_hooks.decorators import block_comment
 
 def run_plugin_for_all_repos(plugin_name: str,
                              event_name: (str, Enum),
-                             is_active: bool=True):
+                             is_active: bool = True):
     """
     This will trigger the responders registered with `event_name`
     for every repo based on active state of a plugin.
@@ -166,7 +166,7 @@ class ResponderRegistrar:
 
     @classmethod
     def responder(cls, plugin_name: str, *actions: [Enum],
-                  queue: Enum=TaskQueue.SHORT):
+                  queue: Enum = TaskQueue.SHORT):
         """
         Registers the decorated function as a responder to the actions
         provided. Specifying description as defaults on option specific args
@@ -201,8 +201,8 @@ class ResponderRegistrar:
     @classmethod
     def _get_responders(cls,
                         event: Enum,
-                        repo: Repository=None,
-                        plugin_name: str=None) -> [ExceptionLoggerTask]:
+                        repo: Repository = None,
+                        plugin_name: str = None) -> [ExceptionLoggerTask]:
         """
         Retrieves the list of responders for the specified event. Filters only
         the ones within a plugin, if ``plugin name`` is specified. Filters only
@@ -227,8 +227,8 @@ class ResponderRegistrar:
     def respond(cls,
                 event: Enum,
                 *args,
-                repo: Repository=None,
-                plugin_name: str=None):
+                repo: Repository = None,
+                plugin_name: str = None):
         """
         Invoke all responders for the given event. If a plugin name is
         specified, invokes responders only within that plugin.

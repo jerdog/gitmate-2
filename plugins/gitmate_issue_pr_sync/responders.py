@@ -19,7 +19,7 @@ from .models import MergeRequestModel
     MergeRequestActions.SYNCHRONIZED
 )
 def sync_updated_pr_with_issue(pr: MergeRequest,
-                               sync_assignees: bool='Synchronize Assignees'):
+                               sync_assignees: bool = 'Synchronize Assignees'):
     issues = pr.closes_issues
     repo = Repository.from_igitt_repo(pr.repository)
     pr_obj = MergeRequestModel.objects.get_or_create(
@@ -76,7 +76,7 @@ def sync_label_remove_from_issue_with_pr(issue: Issue, label: str):
     IssueActions.ATTRIBUTES_CHANGED
 )
 def sync_pr_with_updated_issue(issue: Issue,
-                               sync_assignees: bool='Synchronize Assignees'):
+                               sync_assignees: bool = 'Synchronize Assignees'):
 
     if not sync_assignees:  # pragma: no cover
         return

@@ -57,7 +57,7 @@ def get_plugins() -> [str]:
             and is_plugin(path.abspath(path.join(plugin_dir, dir)))]
 
 
-def run_in_container(image: str, *args: [str], stdin: str=None) -> str:
+def run_in_container(image: str, *args: [str], stdin: str = None) -> str:
     """
     Runs a docker container with the specified image and command and returns
     the output.

@@ -14,8 +14,8 @@ from gitmate_hooks.utils import ResponderRegistrar
 @ResponderRegistrar.responder('scrum', IssueActions.ASSIGNEES_CHANGED)
 def mark_issue_ongoing(issue: Issue,
                        usernames: Set[str],
-                       operating_namespace: str='dev',
-                       ongoing_label: str='ongoing'):
+                       operating_namespace: str = 'dev',
+                       ongoing_label: str = 'ongoing'):
     labels = issue.labels
     ns_regex = re.compile('^{}/.*$'.format(operating_namespace))
     if bool(usernames):
@@ -30,9 +30,9 @@ def mark_issue_ongoing(issue: Issue,
                               MergeRequestActions.OPENED,
                               MergeRequestActions.REOPENED)
 def mark_as_review_or_acceptance(pr: MergeRequest,
-                                 operating_namespace: str='dev',
-                                 review_label: str='code-review',
-                                 acceptance_label: str='acceptance-QA'):
+                                 operating_namespace: str = 'dev',
+                                 review_label: str = 'code-review',
+                                 acceptance_label: str = 'acceptance-QA'):
     labels = pr.labels
     ns_regex = re.compile('^{}/.*$'.format(operating_namespace))
     qa_regex = re.compile(

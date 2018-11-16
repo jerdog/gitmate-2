@@ -12,8 +12,8 @@ from gitmate_hooks.utils import ResponderRegistrar
 )
 def notify_merge_conflicts(
     pr: MergeRequest,
-    conflicts_label: str='rebase',
-    conflicts_message: str='Resolve conflicts message'
+    conflicts_label: str = 'rebase',
+    conflicts_message: str = 'Resolve conflicts message'
 ):
     """
     Check the pull request for merge conflicts, if pull request has merge

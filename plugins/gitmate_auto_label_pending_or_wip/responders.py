@@ -12,8 +12,8 @@ from gitmate_hooks.utils import ResponderRegistrar
 )
 def mark_pending_review_or_wip_accordingly(
     pr: MergeRequest,
-    wip_label: str='Work in progress',
-    pending_review_label: str='Review pending'
+    wip_label: str = 'Work in progress',
+    pending_review_label: str = 'Review pending'
 ):
     """
     Labels the pull request as pending review and removes work in
@@ -40,12 +40,12 @@ def mark_pending_review_or_wip_accordingly(
 )
 def check_keywords_in_commit_messages(
     pr: MergeRequest,
-    wip_label: str='Work in progress',
-    pending_review_label: str='Review pending',
-    enable_fixes_vs_closes: bool=False,
-    bug_label: str='type/bug',
-    no_bug_label_message: str='Fixes is used but issue has no bug label',
-    bug_label_message: str='Closes is used but issue has bug label'
+    wip_label: str = 'Work in progress',
+    pending_review_label: str = 'Review pending',
+    enable_fixes_vs_closes: bool = False,
+    bug_label: str = 'type/bug',
+    no_bug_label_message: str = 'Fixes is used but issue has no bug label',
+    bug_label_message: str = 'Closes is used but issue has bug label'
 ):
     """
     Label the pull request as work in progress and remove pending review label

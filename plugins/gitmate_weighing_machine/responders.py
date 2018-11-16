@@ -10,8 +10,8 @@ from gitmate_hooks.utils import ResponderRegistrar
                               IssueActions.REOPENED)
 def check_presence_of_issue_weight(issue: Issue,
                                    *args,
-                                   no_weight_label: str='weight/missing',
-                                   check_issue_weight_presence: bool=False):
+                                   no_weight_label: str = 'weight/missing',
+                                   check_issue_weight_presence: bool = False):
     if check_issue_weight_presence:
         try:
             if issue.weight is not None:
@@ -28,9 +28,9 @@ def check_presence_of_issue_weight(issue: Issue,
                               IssueActions.REOPENED)
 def check_for_overweight_issues(issue: Issue,
                                 *args,
-                                check_overweight_issues: bool=False,
-                                max_issue_weight: int=4,
-                                max_weight_label: str='weight/overweight'):
+                                check_overweight_issues: bool = False,
+                                max_issue_weight: int = 4,
+                                max_weight_label: str = 'weight/overweight'):
     if check_overweight_issues:
         try:
             if issue.weight is not None and issue.weight > max_issue_weight:

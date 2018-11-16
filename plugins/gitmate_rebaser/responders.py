@@ -58,13 +58,13 @@ def get_matched_command(body: str, username: str):
 @ResponderRegistrar.responder('rebaser', MergeRequestActions.COMMENTED)
 def apply_command_on_merge_request(
         pr: MergeRequest, comment: Comment,
-        enable_rebase: bool=False,
-        enable_merge: bool=False,
-        enable_squash: bool=False,
-        enable_fastforward: bool=False,
-        merge_admin_only: bool=True,
-        fastforward_admin_only: bool=True,
-        squash_admin_only: bool=True
+        enable_rebase: bool = False,
+        enable_merge: bool = False,
+        enable_squash: bool = False,
+        enable_fastforward: bool = False,
+        merge_admin_only: bool = True,
+        fastforward_admin_only: bool = True,
+        squash_admin_only: bool = True
 ):
     """
     Performs a merge, fastforward, squash or rebase of a merge request when an

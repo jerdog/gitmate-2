@@ -111,7 +111,7 @@ def result_table_row(result):
     )
 
 
-def add_comment(commit: Commit, results: dict, mr_num: int=None):
+def add_comment(commit: Commit, results: dict, mr_num: int = None):
     for section_name, section_results in results.items():
         if len(section_results) > 10:
             commit.comment(
@@ -161,8 +161,8 @@ def get_ref(pr):  # pragma: no cover, testing this with mocks is meaningless
     MergeRequestActions.SYNCHRONIZED,
     MergeRequestActions.OPENED
 )
-def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool=True,
-                      coafile_location: str='.coafile'):
+def run_code_analysis(pr: MergeRequest, pr_based_analysis: bool = True,
+                      coafile_location: str = '.coafile'):
     """
     Starts code analysis on the merge request.
     """
